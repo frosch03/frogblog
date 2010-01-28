@@ -1,7 +1,6 @@
 module Page where
 
-import Text.XHtml hiding (text, sub)
-import qualified Text.XHtml as XHTML (text, sub)
+import Text.XHtml.Strict hiding (sub)
 
 import Blog
 import FrogBlog
@@ -11,7 +10,7 @@ import Auxiliary
 htmlHead :: Html
 htmlHead =  header 
          << (   thetitle << (stringToHtml pageTitle)
-            +++ (primHtml styleSheet)
+            +++ styleSheet
             )
 
 site :: (a -> Html) -> a -> Html
@@ -19,19 +18,17 @@ site f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
              +++ primHtml pageNav
-             +++ primHtml "<div class=\"box\">"
-             +++ primHtml "<div class=\"layer\">"
-             +++ f x
-             +++ primHtml "</div>"
-             +++ primHtml "</div>"
+             +++ ( thediv ! [theclass "box"]
+                   $ thediv ! [theclass "blogblock"]
+                     $ f x
+                 )
              +++ primHtml pageFoot 
              )
 
-
 renderPostings :: [BlogEntry] -> Html
-renderPostings []     = primHtml ""
-renderPostings (b:bs) = (paragraph.primHtml $ enHTML b)
-                     +++ renderPostings bs
+renderPostings []     = noHtml
+renderPostings (b:bs) =   paragraph << b
+                      +++ renderPostings bs
 
 page :: BlogEntry -> Html
 page b = pages [b]
@@ -41,16 +38,18 @@ pages = site renderPostings
 
 
 renderHeadings :: [[MetaData]] -> Html
-renderHeadings []       = primHtml ""
+renderHeadings []       = noHtml
 renderHeadings (md:mds) =   ( paragraph 
-                            <<  (   ( h1 $ primHtml sub)
-                                +++ ( primHtml $ date ++ " by " ++ from)
+                            <<  (   sub
+                                +++ date 
+                                +++ stringToHtml " by " 
+                                +++ from
                                 )
                             )
                         +++ renderHeadings mds
-    where sub  = peel $ getMeta isSub  md
-          date = peel $ getMeta isDate md
-          from = peel $ getMeta isFrom md
+    where sub  = getMeta isSub  md
+          date = getMeta isDate md
+          from = getMeta isFrom md
 
 heading :: [MetaData] -> Html
 heading m = headings [m]

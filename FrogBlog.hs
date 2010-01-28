@@ -1,7 +1,9 @@
 module FrogBlog where
 
+import Text.XHtml.Strict
+
 pageTitle :: String 
 pageTitle = "Confessions of a functional Mind"
 
-styleSheet :: String
-styleSheet = "<link rel=\"stylesheet\" href=\"/log.css\" type=\"text/css\" />" 
+styleSheet :: Html
+styleSheet = thelink ! [rel "stylesheet", href "/log.css", thetype "text/css"] $ noHtml

@@ -1,4 +1,4 @@
-module Blog (BlogEntry, MetaData, enHTML) where
+module Blog (BlogEntry, MetaData) where
 
 import Blog.DataDefinition
 import Blog.JSON
