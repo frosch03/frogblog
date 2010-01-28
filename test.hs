@@ -17,17 +17,17 @@ main = runCGI $ handleErrors (cgiMain)
 cgiMain :: CGI CGIResult
 cgiMain = 
     do category <- getInput "category"
-       category <- return (Just "test")
+--       category <- return (Just "test")
        maybe pageDefault postsByCategory category 
 
 
 
 pageDefault :: CGI CGIResult
 pageDefault =
-    do entrys <- lift $ queryEntrys
+    do entrys <- lift $ fetchBlog byDateTimeR
        output $ renderHtml (pages entrys)
 
 postsByCategory :: Category -> CGI CGIResult
 postsByCategory cat =
-    do metas <- lift $ queryOneCategory cat 
-       output $ renderHtml (headings metas)
+    do entrys <- lift $ fetchBlog byCategory 
+       output $ renderHtml (pages entrys)

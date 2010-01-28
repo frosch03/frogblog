@@ -19,11 +19,14 @@ instance HTML (BlogEntry) where
               to   = getMeta isTo   meta
 
 instance HTML (MetaData) where
-    toHtml x@(Subject _)  = h1 << (toHtml x)
-    toHtml x@(Date    _)  = thespan ! [theclass "date"]     $ toHtml x
-    toHtml x@(From    _)  = thespan ! [theclass "author"]   $ toHtml x
-    toHtml (To      xs) = thespan ! [theclass "category"] $ stringToHtml $ commaSeperate xs
-        where commaSeperate xs = (drop 2) . (foldr (\next done -> (", " ++ next) ++ done) "") $ xs
+    toHtml (Subject x)  = h1 << (toHtml x)
+    toHtml (Date    x)  = thespan ! [theclass "date"]     $ toHtml x
+    toHtml (From    x)  = thespan ! [theclass "author"]   $ linkify ("author", x)
+    toHtml (To  (x:[])) = thespan ! [theclass "category"] $ linkify ("category", x)
+    toHtml (To  (x:xs)) = thespan ! [theclass "category"] $ foldl fun (linkify ("category", x)) xs
+        where fun :: Html -> String -> Html
+              fun done []   = done
+              fun done next = done +++ (stringToHtml ", " +++ linkify ("category", next))
 
 instance HTML (BlogText) where
     toHtml (Empty)          = noHtml
@@ -40,3 +43,14 @@ instance HTML (Command) where
     toHtml (Underline body)     = thespan ! [theclass "uline"]  $ (toHtml body)
     toHtml (Strike    body)     = thespan ! [theclass "strike"] $ (toHtml body)
     toHtml (Link      url body) = toHtml $ hotlink url (toHtml body)
+
+
+blogPath = "http://localhost/cgi-bin/"
+blogName = "testBlog.cgi"
+blogURL  = blogPath ++ blogName
+
+type Parameter = String
+type Value     = String
+linkify :: (Parameter, Value) -> Html
+linkify ([],  val) = toHtml $ hotlink blogURL (stringToHtml val)
+linkify (par, val) = toHtml $ hotlink (blogURL ++ ('?' : par) ++ ('=' : val)) (stringToHtml val)

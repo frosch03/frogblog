@@ -8,7 +8,6 @@ import Text.JSON.Generic
 import Data.Data
 
 import Control.Monad.Trans (liftIO)
---import Control.Monad.Reader (ReaderT, ask, liftM3)
 import Control.Monad.Reader 
 import Data.Time.Clock.POSIX (getPOSIXTime)
 
@@ -17,58 +16,50 @@ import Blog.DataDefinition
 
 import Auxiliary
 
+-- publishPosting       :: BlogEntry -> BloggerCouch
+-- fetchBlog byDateTime :: IO [BlogEntry]
+-- fetchBlog bySubject  :: IO [BlogEntry]
+-- fetchMeta authors    :: IO [MetaData]
+-- fetchMeta categorys  :: IO [MetaData]
 
--- TODO:
--- funktion to write a blogpost into the database
--- function to read the actual and n previous blogpost's from the database
--- function to read a specific and n previous blogpost's from the database
--- ^^- the given functions but also with sorting by subject, category, author 
--- ^^- the given functions but also with filtering by subject, category, author, date
--- function to overwrite a specific blogpost in the database
--- function to delete a specific blogpost in the database
+dBaseServer         = "localhost"
+dBasePort           = 5984
+dBaseViewLocation   = doc "views"
+dBaseName           = db "blog"
 
-type BlogCouchMonad = ReaderT DB CouchMonad (Either String Rev)
+type PublishCouch = CouchMonad (Either String Rev)
+type FetchCouch a = CouchMonad [(Doc, a)]
 
-publishTest :: CouchMonad (Either String Rev)
-publishTest = 
-    do s       <- liftIO (readFile "/tmp/test.hlog")
-       posting <- return $ read s :: CouchMonad BlogEntry
-       (postEntry posting) `runReaderT` (db "blog") 
-
-postEntry :: BlogEntry -> BlogCouchMonad
-postEntry posting = 
+publishPosting :: BlogEntry -> PublishCouch
+publishPosting post = 
     do now     <- liftIO getPOSIXTime
        docName <- return $ doc.show $ now
-       dBase   <- ask
-       lift $ newNamedDoc dBase docName posting
-       
+       newNamedDoc dBaseName docName post
 
-queryEntrys :: IO [BlogEntry]
-queryEntrys = 
-    do x      <- runCouchDB' $ queryView (db "blog") (doc "views") (doc "bySubject") [("descending", JSBool True)]
-       return (map snd x)
+fetchBlog :: FetchCouch BlogEntry -> IO [BlogEntry]
+fetchBlog = fetch
 
-queryLastEntry :: IO BlogEntry
-queryLastEntry = 
-    do x <- queryEntrys
-       return (head x)
+fetchMeta :: FetchCouch MetaData -> IO [MetaData]
+fetchMeta = fetch
 
-queryMetaData :: IO [[MetaData]]
-queryMetaData = 
-    do x      <- runCouchDB' $ queryView (db "blog") (doc "views") (doc "onlyMeta") [("descending", JSBool True)]
-       return (map snd x)
+fetch :: FetchCouch a -> IO [a]
+fetch query =
+    do dBaseOutput <- runCouchDB dBaseServer dBasePort query
+       return (map snd dBaseOutput)
 
-queryOneCategory :: Category -> IO [[MetaData]]
-queryOneCategory cat = 
-      do result  <- queryMetaData
-         return $ excerpt cat result
+type View = String
+type Reverse = Bool
+query :: (JSON a) => View -> Reverse -> FetchCouch a
+query view r = 
+    do dBaseView <- return (doc view)
+       queryView dBaseName dBaseViewLocation dBaseView [("descending", JSBool r)]
 
 
+byDateTimeR :: FetchCouch BlogEntry
+byDateTimeR = query "allPosts" True
 
-excerpt :: Category -> [[MetaData]] -> [[MetaData]]
-excerpt cat = foldr (\a b -> if (hasCategory cat a) then a:b else b) []
+bySubject :: FetchCouch BlogEntry
+bySubject = query "bySubject" False
 
-hasCategory :: Category -> [MetaData] -> Bool
-hasCategory cat md = foldl1 (||) $ map (== cat) metaTo
-    where metaTo     :: [Category]
-          (To metaTo) = getMeta isTo md
+byCategory :: FetchCouch BlogEntry
+byCategory = query "byCategory" False
