@@ -1,8 +1,11 @@
 module Main where
 
 import Network.CGI
+import Network.CGI.Protocol
 import Text.XHtml (renderHtml)
+import Control.Monad (join)
 import Control.Monad.Trans (lift)
+import Data.Maybe (isJust, fromJust)
  
 import Blog
 import Blog.DataDefinition
@@ -12,22 +15,26 @@ import Page
 main :: IO ()
 main = runCGI $ handleErrors (cgiMain)
 
-
-
 cgiMain :: CGI CGIResult
-cgiMain = 
-    do category <- getInput "category"
---       category <- return (Just "test")
-       maybe pageDefault postsByCategory category 
+cgiMain = try "author"   postsByAuthor 
+        $ try "category" postsByCategory
+        $ pageDefault
 
-
+try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
+try s f def = do tmp <- getInput s
+                 maybe def f tmp
 
 pageDefault :: CGI CGIResult
 pageDefault =
-    do entrys <- lift $ fetchBlog byDateTimeR
+    do entrys <- lift $ fetch byDateTimeR
        output $ renderHtml (pages entrys)
 
 postsByCategory :: Category -> CGI CGIResult
 postsByCategory cat =
-    do entrys <- lift $ fetchBlog byCategory 
+    do entrys <- lift $ fetch byDateTimeR `limitTo` (To [cat])
+       output $ renderHtml (pages entrys)
+
+postsByAuthor :: Author -> CGI CGIResult
+postsByAuthor author =
+    do entrys <- lift $ fetch byDateTimeR `limitTo` (From author)
        output $ renderHtml (pages entrys)

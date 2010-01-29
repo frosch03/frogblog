@@ -3,6 +3,7 @@ module Blog.DataDefinition where
 type URL        = String
 type Text       = String
 type Category   = String
+type Author     = String
 
 data BlogEntry
     = Entry [MetaData] BlogText

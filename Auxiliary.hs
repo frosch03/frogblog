@@ -9,6 +9,9 @@ peel (Date    s) = s
 peel (From    s) = s
 peel (To      s) = concat s
 
+peel_ :: MetaData -> [String]
+peel_ (To      s) = s
+
 getMeta :: (MetaData -> Bool) -> [MetaData] -> MetaData
 getMeta f = head.(filter f)
 
@@ -31,3 +34,6 @@ isFrom _        = False
 fromOK :: Result a -> a
 fromOK (Ok x)    = x
 fromOK (Error x) = error $ "fromOK wasn't OK: " ++ x
+
+isAuthor    = isFrom
+isCategory  = isTo
