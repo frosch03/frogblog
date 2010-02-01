@@ -2,15 +2,30 @@ module Text where
 
 import Blog
 import Blog.DataDefinition
+import Auxiliary
+import FrogBlog
 
 shorten :: Int -> BlogEntry -> BlogEntry
-shorten n (Entry md post) = Entry md (lines2post short)
-    where lns   = lines $ toText post
-          short = take n lns
+shorten n (Entry md post) = Entry md (fromLines appendix short)
+    where lns      = lines $ toText post
+          short    = take n lns
+          sub      = peel $ getMeta isSub md
+          appendix = (linkify ("subject", sub, " (more)... "))
 
-lines2post :: [String] -> BlogText
-lines2post []       = Empty
-lines2post (ln:lns) = MixT ln (MixC Break (lines2post lns))
+type Appendix = BlogText
+fromLines :: Appendix -> [String] -> BlogText
+fromLines apx (ln: []) = MixT ln apx
+fromLines apx (ln:lns) = MixT ln (MixC Break (fromLines apx lns))
+
+type Parameter = String
+type Value     = String
+linkify :: (Parameter, Value, String) -> BlogText
+linkify ([],  _,   _   ) = Empty
+linkify (par, val, text) = PureC 
+                             (Link 
+                               (blogURL ++ ('?': par) ++ ('=': val))
+                               (PureT text)
+                             )
 
 class TEXT a where
     toText :: a -> String
@@ -32,4 +47,6 @@ instance TEXT (Command) where
     toText (Italic    body)     = (toText body)
     toText (Underline body)     = (toText body)
     toText (Strike    body)     = (toText body)
+    toText (Section   body)     = (toText body)
     toText (Link      url body) = '[':(toText body) ++ "]"
+    toText (Code      src)      = src

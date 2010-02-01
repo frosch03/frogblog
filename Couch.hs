@@ -57,6 +57,11 @@ limitTo bs (To cats) =
        return $ filter f bs'
     where f :: BlogEntry -> Bool
           f (Entry mds _) = foldl1 (||) $ map (flip elem $ (peel_ $ getMeta isCategory mds)) cats
+limitTo bs (Subject sub) = 
+    do bs' <- bs
+       return $ filter f bs'
+    where f :: BlogEntry -> Bool
+          f (Entry mds _) = (peel $ getMeta isSub mds) == sub
 
 
 

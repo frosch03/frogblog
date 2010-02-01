@@ -1,8 +1,10 @@
 module Blog.JSON where
 
+
 import Blog.DataDefinition
 
 import Text.JSON
+import Auxiliary (firstUp)
 import Database.CouchDB.JSON ( jsonField
                              , jsonObject
                              , jsonString
@@ -28,7 +30,7 @@ instance JSON (BlogEntry) where
 instance JSON (MetaData) where
     showJSON (Subject  x) = JSObject $ toJSObject [ ("Subject",  JSString $ toJSString $ x) ]
     showJSON (Date     x) = JSObject $ toJSObject [ ("Date",     JSString $ toJSString $ x) ]
-    showJSON (To       x) = JSObject $ toJSObject [ ("To",       JSArray $ map (JSString . toJSString) $ x) ]
+    showJSON (To       x) = JSObject $ toJSObject [ ("To",       JSArray $ map (JSString . toJSString) $ (firstUp x)) ]
     showJSON (From     x) = JSObject $ toJSObject [ ("From",     JSString $ toJSString $ x) ]
     readJSON x =  Ok $ case (fst.head $ jsObj) of
                            "Subject"  -> Subject  (fromOK.readJSON.snd.head $ jsObj)
@@ -61,7 +63,9 @@ instance JSON (Command) where
     showJSON (Italic    x) = JSObject $ toJSObject [ ("Italic", showJSON x) ]
     showJSON (Underline x) = JSObject $ toJSObject [ ("Underline", showJSON x) ]
     showJSON (Strike    x) = JSObject $ toJSObject [ ("Strike", showJSON x) ]
+    showJSON (Section   x) = JSObject $ toJSObject [ ("Section", showJSON x) ]
     showJSON (Link x y   ) = JSObject $ toJSObject [ ("Link", JSArray [ showJSON x, showJSON y ] ) ] 
+    showJSON (Code      x) = JSObject $ toJSObject [ ("Code", showJSON x) ]
     showJSON (None)        = JSObject $ toJSObject [ ("None", JSNull) ]
     readJSON x = Ok $ case (fst.head $ jsObj) of
                           "Break"     -> Break 
@@ -69,7 +73,9 @@ instance JSON (Command) where
                           "Italic"    -> Italic    (fromOK.readJSON.snd.head $ jsObj)
                           "Underline" -> Underline (fromOK.readJSON.snd.head $ jsObj)
                           "Strike"    -> Strike    (fromOK.readJSON.snd.head $ jsObj)
+                          "Section"   -> Section   (fromOK.readJSON.snd.head $ jsObj)
                           "Link"      -> Link      (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
+                          "Code"      -> Code      (fromOK.readJSON.snd.head $ jsObj)
                           "None"      -> None
         where jsObj = fromOK.jsonObject $ x 
               fromOK (Ok x)    = x 

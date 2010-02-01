@@ -54,21 +54,27 @@ pBlogText =
        return x
 
 pCommand =
-        try (
-        do char '\n'
-           return Break
-        ) <|>
+        try ( do char '\n'
+                 return Break
+            ) 
+        <|>
         do char '\\'
-           x <- try ( do name <- pCmdName
+           x <- try ( do result <- (pBlock "code")
+                         return (Code result)
+                    )
+                <|> 
+                try ( do name <- pCmdName
                          body <- pCmdBody
                          case name of
                              "bold"      -> return (Bold body)
                              "italic"    -> return (Italic body)
                              "underline" -> return (Underline body)
                              "strike"    -> return (Strike body)
+                             "section"   -> return (Section body)
                              otherwise   -> return None
                     )
-                <|> ( do name <- pCmdName
+                <|>
+                    ( do name <- pCmdName
                          conf <- pCmdConf
                          body <- pCmdBody
                          case name of
@@ -76,6 +82,19 @@ pCommand =
                              otherwise   -> return None
                     )
            return x
+
+pBlock blockType = 
+    do string "begin"
+       between (char '{') (char '}') (string blockType)
+       spaces
+       result <- manyTill anyChar (try $ pBlockEnd blockType)
+       return result
+
+pBlockEnd blockType =
+    do string "\\end"
+       between (char '{') (char '}') (string blockType)
+       rspaces
+
 
 pMetaSub  = do string "Subject"
                spaces

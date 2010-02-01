@@ -1,9 +1,11 @@
 module Blog.HTML where
 
 import Text.XHtml.Strict
+import Language.Haskell.HsColour.InlineCSS
 
 import Blog.DataDefinition
 import Auxiliary
+import FrogBlog
 
 
 instance HTML (BlogEntry) where
@@ -38,16 +40,15 @@ instance HTML (BlogText) where
 instance HTML (Command) where
     toHtml (None)               = noHtml
     toHtml (Break)              = br
-    toHtml (Bold      body)     = bold      << (toHtml body)
-    toHtml (Italic    body)     = italics   << (toHtml body)
-    toHtml (Underline body)     = thespan ! [theclass "uline"]  $ (toHtml body)
-    toHtml (Strike    body)     = thespan ! [theclass "strike"] $ (toHtml body)
-    toHtml (Link      url body) = toHtml $ hotlink url (toHtml body)
+    toHtml (Bold      body)     = bold       << (toHtml body)
+    toHtml (Italic    body)     = italics    << (toHtml body)
+    toHtml (Underline body)     = thespan  ! [theclass "uline"]  $ (toHtml body)
+    toHtml (Strike    body)     = thespan  ! [theclass "strike"] $ (toHtml body)
+    toHtml (Section   body)     = h2         << (toHtml body)
+    toHtml (Link      url body) = toHtml   $ hotlink url (toHtml body)
+    toHtml (Code      src)      = thediv   ! [theclass "code"]
+                                $ primHtml $ hscolour codeColor False src
 
-
-blogPath = "http://localhost/cgi-bin/"
-blogName = "testBlog.cgi"
-blogURL  = blogPath ++ blogName
 
 type Parameter = String
 type Value     = String

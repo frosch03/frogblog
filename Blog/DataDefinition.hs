@@ -32,6 +32,8 @@ data Command
     | Italic    BlogText
     | Underline BlogText
     | Strike    BlogText
+    | Section   BlogText
     | Link URL  BlogText
+    | Code      String
     | None
     deriving (Show)

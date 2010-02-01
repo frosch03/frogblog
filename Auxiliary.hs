@@ -1,5 +1,7 @@
 module Auxiliary where
 
+import Data.Char (toLower, toUpper)
+
 import Blog.DataDefinition
 import Text.JSON (Result(..))
 
@@ -37,3 +39,10 @@ fromOK (Error x) = error $ "fromOK wasn't OK: " ++ x
 
 isAuthor    = isFrom
 isCategory  = isTo
+
+firstUp :: [String] -> [String]
+firstUp []     = []
+firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
+    where x_low   = (map toLower x)
+          x_first = toUpper $ head x_low
+

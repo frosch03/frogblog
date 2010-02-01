@@ -12,7 +12,7 @@ pageHead = concat $
 pageNav :: String
 pageNav = concat $
       "    <div class=\"left\">\n"
-    : "    <pre class=\"code\"> \n"
+    : "    <pre class=\"navi\"> \n"
     : "  Table of Content \n"
     : "--------------------- \n"
     : "  1) <a href=\"index.html#intro\">introduction</a>\n"
@@ -41,7 +41,6 @@ pageFoot = concat $
     : "            src=\"http://jigsaw.w3.org/css-validator/images/vcss\" \n"
     : "            alt=\"Valid CSS!\" /></a>\n"
     : "\n"
-    : "    </div>\n"
     : [[]]
 
 akvsHead :: String
