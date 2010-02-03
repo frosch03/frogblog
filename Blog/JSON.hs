@@ -1,22 +1,18 @@
-module Blog.JSON where
+module Blog.JSON 
+    ()
+where
 
-
-import Blog.DataDefinition
-
+-- Extern 
 import Text.JSON
-import Auxiliary (firstUp)
 import Database.CouchDB.JSON ( jsonField
                              , jsonObject
                              , jsonString
                              )
 
-dropOK :: Result a -> a
-dropOK (Ok x)    = x 
-dropOK (Error x) = error x
-
-peel js key = (fromOK.(jsonField key)) $ fromOK.jsonObject $ js
-    where fromOK (Ok x)    = x 
-          fromOK (Error x) = error x
+-- Intern
+import Blog.Definition
+import Blog.Auxiliary (dropOK)
+import Auxiliary (firstUp)
 
 instance JSON (BlogEntry) where
     showJSON x = JSObject $ toJSObject [ ("MetaData", JSArray $ map showJSON meta)
@@ -44,17 +40,17 @@ instance JSON (MetaData) where
 instance JSON (BlogText) where
     showJSON (PureT x)  = JSObject $ toJSObject [ ("PureT", JSString $ toJSString $ x) ]
     showJSON (PureC x)  = JSObject $ toJSObject [ ("PureC", showJSON x) ]
-    showJSON (MixT x y) = JSObject $ toJSObject [ ("MixT", JSArray [ JSString $ toJSString $ x, showJSON y] ) ] 
+    showJSON (MixT x y) = JSObject $ toJSObject [ ("MixT", JSArray [ JSString $ toJSString $ x, showJSON y] ) ]  
     showJSON (MixC x y) = JSObject $ toJSObject [ ("MixC", JSArray [ showJSON x, showJSON y ] ) ] 
     showJSON (Empty)    = JSObject $ toJSObject [ ("Empty", JSNull) ]
     readJSON x = Ok $ case (fst.head $ jsObj) of
                           "PureT" -> PureT (fromOK.readJSON.snd.head $ jsObj)
-                          "PureC" -> PureC (fromOK.readJSON.snd.head $ jsObj) 
-                          "MixT"  -> MixT  (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj) 
-                          "MixC"  -> MixC  (fromOK.readJSON.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj) 
+                          "PureC" -> PureC (fromOK.readJSON.snd.head $ jsObj)
+                          "MixT"  -> MixT  (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
+                          "MixC"  -> MixC  (fromOK.readJSON.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
                           "Empty" -> Empty
-        where jsObj = fromOK.jsonObject $ x 
-              fromOK (Ok x)    = x 
+        where jsObj = fromOK.jsonObject $ x
+              fromOK (Ok x)    = x
               fromOK (Error x) = error x
 
 instance JSON (Command) where
@@ -64,11 +60,11 @@ instance JSON (Command) where
     showJSON (Underline x) = JSObject $ toJSObject [ ("Underline", showJSON x) ]
     showJSON (Strike    x) = JSObject $ toJSObject [ ("Strike", showJSON x) ]
     showJSON (Section   x) = JSObject $ toJSObject [ ("Section", showJSON x) ]
-    showJSON (Link x y   ) = JSObject $ toJSObject [ ("Link", JSArray [ showJSON x, showJSON y ] ) ] 
+    showJSON (Link x y   ) = JSObject $ toJSObject [ ("Link", JSArray [ showJSON x, showJSON y ] ) ]
     showJSON (Code      x) = JSObject $ toJSObject [ ("Code", showJSON x) ]
     showJSON (None)        = JSObject $ toJSObject [ ("None", JSNull) ]
     readJSON x = Ok $ case (fst.head $ jsObj) of
-                          "Break"     -> Break 
+                          "Break"     -> Break
                           "Bold"      -> Bold      (fromOK.readJSON.snd.head $ jsObj)
                           "Italic"    -> Italic    (fromOK.readJSON.snd.head $ jsObj)
                           "Underline" -> Underline (fromOK.readJSON.snd.head $ jsObj)
@@ -77,8 +73,12 @@ instance JSON (Command) where
                           "Link"      -> Link      (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
                           "Code"      -> Code      (fromOK.readJSON.snd.head $ jsObj)
                           "None"      -> None
-        where jsObj = fromOK.jsonObject $ x 
-              fromOK (Ok x)    = x 
+        where jsObj = fromOK.jsonObject $ x
+              fromOK (Ok x)    = x
               fromOK (Error x) = error x
-     
+
+
+peel js key = (fromOK.(jsonField key)) $ fromOK.jsonObject $ js
+    where fromOK (Ok x)    = x 
+          fromOK (Error x) = error x
 

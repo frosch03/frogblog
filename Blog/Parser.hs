@@ -1,36 +1,23 @@
-module Blog.Parser where
+module Blog.Parser 
+    ()
+where
 
-import Blog.DataDefinition
+-- Extern
 import Text.ParserCombinators.Parsec
 
--- | rspaces is another version of spaces with the difference, that 
---   the newline-char is not allowed as space-char
-rspaces = skipMany (oneOf " \t\v\f\r")
+-- Intern
+import Blog.Definition
 
-pText           = many1 $ noneOf "\\{}[]%"
-pLine           = many1 $ noneOf "\\{}[]%\n"
+-- Blog-Parser
+--------------
 
-pString2Line     = many1 $ noneOf "\\{}[]%\n\""
-pString2Category = do result <- many  $ noneOf ",\\{}[]%\n\" "
-                      rspaces
-                      return result
+pBlogEntry = 
+    do meta  <- pMeta
+       entry <- pBlogText
+       return (Entry meta entry)
 
-pCategory = do result <- many  $ noneOf ",\\{}[]%\n "
-               rspaces
-               return result
-
-pEmptyLine = do spaces
-                many1 (char '\n')
-
-pCmdName = many1 $ noneOf "\\{}[]% "
-pCmdConf = between (char '[') (char ']') pText
-pCmdBody = between (char '{') (char '}') pBlogText
-
-pMeta = do many1 (choice [pMetaSub, pMetaDate, pMetaTo, pMetaFrom])
-
-pBlogEntry = do meta  <- pMeta
-                entry <- pBlogText
-                return (Entry meta entry)
+pMeta = 
+    do many1 (choice [pMetaSub, pMetaDate, pMetaTo, pMetaFrom])
 
 pBlogText =
     do x <- try ( do txt <- pLine
@@ -54,36 +41,83 @@ pBlogText =
        return x
 
 pCommand =
-        try ( do char '\n'
-                 return Break
-            ) 
-        <|>
-        do char '\\'
-           x <- try ( do result <- (pBlock "code")
-                         return (Code result)
-                    )
-                <|> 
-                try ( do name <- pCmdName
-                         body <- pCmdBody
-                         case name of
-                             "bold"      -> return (Bold body)
-                             "italic"    -> return (Italic body)
-                             "underline" -> return (Underline body)
-                             "strike"    -> return (Strike body)
-                             "section"   -> return (Section body)
-                             otherwise   -> return None
-                    )
-                <|>
-                    ( do name <- pCmdName
-                         conf <- pCmdConf
-                         body <- pCmdBody
-                         case name of
-                             "link"      -> return (Link conf body)
-                             otherwise   -> return None
-                    )
-           return x
+    try ( do char '\n'
+             return Break
+        )
+    <|>
+    do char '\\'
+       x <- try ( do result <- (pBlock "code")
+                     return (Code result)
+                )
+            <|>
+            try ( do name <- pCmdName
+                     body <- pCmdBody
+                     case name of
+                         "bold"      -> return (Bold body)
+                         "italic"    -> return (Italic body)
+                         "underline" -> return (Underline body)
+                         "strike"    -> return (Strike body)
+                         "section"   -> return (Section body)
+                         otherwise   -> return None
+                )
+            <|>
+                ( do name <- pCmdName
+                     conf <- pCmdConf
+                     body <- pCmdBody
+                     case name of
+                         "link"      -> return (Link conf body)
+                         otherwise   -> return None
+                )
+       return x
 
-pBlock blockType = 
+-- Instance definitions
+-----------------------
+instance Read (MetaData) where
+    readsPrec p s = case parse (choice [pString2Sub, pString2Date, pString2To, pString2From]) "" s of
+                        Left  _ -> []
+                        Right x -> [(x, "")]
+
+instance Read (BlogEntry) where
+    readsPrec p s = case parse pBlogEntry "" s of
+                        Left  _ -> []
+                        Right x -> [(x, "")]
+
+instance Read (BlogText) where
+    readsPrec p s = case parse pBlogText "" s of
+                        Left  _ -> []
+                        Right x -> [(x,"")]
+
+instance Read (Command) where
+    readsPrec p s = case parse pCommand "" s of
+                        Left  _ -> []
+                        Right x -> [(x, "")]
+
+-- Supporting parsers
+---------------------
+-- | rspaces is another version of spaces with the difference, that 
+--   the newline-char is not allowed as space-char
+rspaces          = skipMany (oneOf " \t\v\f\r")
+
+pText            = many1 $ noneOf "\\{}[]%"
+pLine            = many1 $ noneOf "\\{}[]%\n"
+
+pString2Line     = many1 $ noneOf "\\{}[]%\n\""
+pString2Category = do result <- many  $ noneOf ",\\{}[]%\n\" "
+                      rspaces
+                      return result
+
+pCategory        = do result <- many  $ noneOf ",\\{}[]%\n "
+                      rspaces
+                      return result
+
+pEmptyLine       = do spaces
+                      many1 (char '\n')
+
+pCmdName         = many1 $ noneOf "\\{}[]% "
+pCmdConf         = between (char '[') (char ']') pText
+pCmdBody         = between (char '{') (char '}') pBlogText
+
+pBlock blockType =
     do string "begin"
        between (char '{') (char '}') (string blockType)
        spaces
@@ -151,25 +185,3 @@ pString2To   = do string "To"
                   spaces
                   to <- pQuotedString (pString2Category `sepBy1` do {(char ','); rspaces})
                   return (To to)
-
-instance Read (MetaData) where
-    readsPrec p s = case parse (choice [pString2Sub, pString2Date, pString2To, pString2From]) "" s of
-                        Left  _ -> []
-                        Right x -> [(x, "")]
-
-instance Read (BlogEntry) where
-    readsPrec p s = case parse pBlogEntry "" s of
-                        Left  _ -> []
-                        Right x -> [(x, "")]
-
-instance Read (BlogText) where
-    readsPrec p s = case parse pBlogText "" s of
-                        Left  _ -> []
-                        Right x -> [(x,"")]
-
-instance Read (Command) where
-    readsPrec p s = case parse pCommand "" s of 
-                        Left  _ -> []
-                        Right x -> [(x, "")]
-
-

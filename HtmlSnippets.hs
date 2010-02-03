@@ -1,4 +1,11 @@
-module HtmlSnippets where
+module HtmlSnippets 
+    ( pageHead
+    , pageNav
+    , pageFoot
+    , akvsHead
+    , akvsBody
+    )
+where
 
 pageHead :: String
 pageHead = concat $ 
@@ -108,7 +115,7 @@ akvsHead = concat $
     : [[]]
 
 akvsBody :: String
-akvsBody = concat $ 
+akvsBody = concat $
       "<!-- AKVS body start v1.5 -->\n"
     : "<div id=\"akct\"><a id=\"akpeel\" href=\"http://www.vorratsdatenspeicherung.de\" title=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp; handeln!\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvst.gif\" alt=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp;handeln!\" /></a>\n"
     : "<a id=\"akpreload\" href=\"http://wiki.vorratsdatenspeicherung.de/?title=Online-Demo\" title=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvsi.gif\" alt=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\" /></a></div>\n"

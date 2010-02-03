@@ -1,4 +1,13 @@
-module Blog.DataDefinition where
+module Blog.Definition 
+    ( BlogEntry(..)
+    , MetaData(..)
+    , BlogText(..)
+    , Command(..)
+    , Category
+    , Author
+    )
+where
+
 
 type URL        = String
 type Text       = String
@@ -16,7 +25,6 @@ data MetaData
     | From     String
     deriving (Show)
 
-
 data BlogText
     = PureT Text
     | PureC Command
@@ -24,7 +32,6 @@ data BlogText
     | MixC  Command BlogText
     | Empty
     deriving (Show)
-
 
 data Command
     = Break

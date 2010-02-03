@@ -1,20 +1,34 @@
-module Page where
+module Page
+    ( simplePosts 
+    , posts
+    )
+where
 
+-- Extern 
 import Text.XHtml.Strict hiding (sub)
 
+-- Intern
 import Blog
-import FrogBlog
+import Auxiliary (getMeta, isFrom, isSub, isTo, isDate)
 import HtmlSnippets
-import Auxiliary
+import Config
 
-htmlHead :: Html
-htmlHead =  header 
-         << (   thetitle << (stringToHtml pageTitle)
-            +++ styleSheet
-            )
+type Counts = (Int, Int)
 
-site :: (a -> Html) -> a -> Html
-site f x =   htmlHead
+
+simplePosts :: [BlogEntry] -> Html
+simplePosts = simpleSite renderPostings
+
+posts :: Int -> [BlogEntry] -> Html
+posts pageNum bs = site counts renderPostings bs'
+    where bs'     = (take pageStep) . (drop skip) $ bs
+          skip    = pageStep * pageNum
+          pageMax = (length bs) `div` pageStep
+          counts  = (pageNum, pageMax)
+
+
+simpleSite :: (a -> Html) -> a -> Html
+simpleSite f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
              +++ primHtml pageNav
@@ -22,62 +36,46 @@ site f x =   htmlHead
                    $ thediv ! [theclass "blogblock"]
                      $ f x
                  )
-             +++ primHtml pageFoot 
+             +++ primHtml pageFoot
              )
+
+site :: Counts -> (a -> Html) -> a -> Html
+site cs f = simpleSite $ pnNavi cs f
+
 
 renderPostings :: [BlogEntry] -> Html
 renderPostings []     = noHtml
 renderPostings (b:bs) =   b
                       +++ renderPostings bs
 
-page :: BlogEntry -> Html
-page b = pages [b]
 
-pages :: [BlogEntry] -> Html
-pages = site renderPostings
+htmlHead :: Html
+htmlHead =  header
+         << (   thetitle << (stringToHtml pageTitle)
+            +++ styleSheet
+            )
 
-----
+pnNavi :: Counts -> (a -> Html) -> a -> Html
+pnNavi cs f x = pnWrap cs +++ f x +++ pnWrap cs
 
-type Page = (Int, Int)
-display :: [BlogEntry] -> Int -> Html
-display bs actPage = site_ (actPage, maxPage) renderPostings displayed_bs
-    where displayed_bs = (take pageStep) . (drop skip) $ bs
-          skip         = pageStep * actPage 
-          maxPage      = (length bs) `div` pageStep
-
-site_ :: Page -> (a -> Html) -> a -> Html
-site_ (actPage, maxPage) f x =   htmlHead
-                             +++ body
-                             <<  (   primHtml pageHead
-                                 +++ primHtml pageNav
-                                 +++ ( thediv ! [theclass "box"]
-                                       $ thediv ! [theclass "blogblock"]
-                                         $ (   ( thediv ! [theclass "prevnext"] $
-                                                   (if isNext then next else stringToHtml "[ older ")
-                                               +++ (if isPrev then prev else stringToHtml "| newer ]")
-                                               )
-                                           +++ f x
-                                           +++ ( thediv ! [theclass "prevnext"] $
-                                                   (if isNext then next else stringToHtml "[ older ")
-                                               +++ (if isPrev then prev else stringToHtml "| newer ]")
-                                               )
-                                           +++ br
-                                           )
-                                     )
-                                 +++ primHtml pageFoot 
-                                 )
+pnWrap :: Counts -> Html
+pnWrap (actPage, maxPage) = 
+    thediv ! [theclass "prevnext"] $
+         (   (if isNext then next else stringToHtml "[ oldr ")
+         +++ (if isPrev then prev else stringToHtml "| newr ]")
+         )
     where isNext  = (actPage < maxPage)
           isPrev  = (actPage > 0)
           next    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage+1))) (stringToHtml "[ older ")
           prev    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage-1))) (stringToHtml "| newer ]")
 
-----
 
+-- needed ???
 renderHeadings :: [[MetaData]] -> Html
 renderHeadings []       = noHtml
 renderHeadings (md:mds) =   (   (   sub
-                                +++ date 
-                                +++ stringToHtml " by " 
+                                +++ date
+                                +++ stringToHtml " by "
                                 +++ from
                                 )
                             )
@@ -86,8 +84,7 @@ renderHeadings (md:mds) =   (   (   sub
           date = getMeta isDate md
           from = getMeta isFrom md
 
-heading :: [MetaData] -> Html
-heading m = headings [m]
-
 headings :: [[MetaData]] -> Html
-headings = site renderHeadings
+headings = simpleSite renderHeadings
+-------------
+

@@ -1,17 +1,23 @@
 module Main where
 
+-- Extern 
 import Network.CGI
 import Network.CGI.Protocol
+
 import Text.XHtml (renderHtml)
+
 import Control.Monad (join)
 import Control.Monad.Trans (lift)
+
 import Data.Maybe (isJust, fromJust)
- 
+
+-- Intern
 import Blog
-import Blog.DataDefinition
-import Couch
-import Page hiding (page)
-import Text
+import Blog.Definition
+import Blog.Text (shorten)
+import Couch ( fetch, limitTo
+             , byDateTimeR, bySubject, byCategory)
+import Page (simplePosts, posts)
 
 main :: IO ()
 main = runCGI $ handleErrors (cgiMain)
@@ -25,33 +31,33 @@ cgiMain = try "page"     page
 
 try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
 try s f def = do tmp <- getInput s
-                 maybe def f tmp
+                 maybe def f tmp 
 
 page :: String -> CGI CGIResult
-page p =
+page p = 
     do entrys  <- lift $ fetch byDateTimeR
        entrys' <- return $ map (shorten 5) entrys
        p'      <- return $ ((read p) :: Int)
-       output $ renderHtml (display entrys' p')
+       output $ renderHtml (posts p' entrys') 
 
 pageDefault :: CGI CGIResult
 pageDefault =
     do entrys  <- lift $ fetch byDateTimeR
        entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (display entrys' 0)
---       output $ renderHtml (pages entrys')
+       output $ renderHtml (posts 0 entrys')
+--       output $ renderHtml (simplePosts entrys')
 
 postWithSubject :: Category -> CGI CGIResult
 postWithSubject sub =
     do entry <- lift $ fetch bySubject `limitTo` (Subject sub)
-       output $ renderHtml (pages entry)
+       output $ renderHtml (simplePosts entry)
 
 postsByCategory :: Category -> CGI CGIResult
 postsByCategory cat =
     do entrys <- lift $ fetch byDateTimeR `limitTo` (To [cat])
-       output $ renderHtml (pages entrys)
+       output $ renderHtml (simplePosts entrys)
 
 postsByAuthor :: Author -> CGI CGIResult
 postsByAuthor author =
     do entrys <- lift $ fetch byDateTimeR `limitTo` (From author)
-       output $ renderHtml (pages entrys)
+       output $ renderHtml (simplePosts entrys)

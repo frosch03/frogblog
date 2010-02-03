@@ -1,18 +1,28 @@
-module Auxiliary where
+module Auxiliary 
+    ( peel, peel_
+    , getMeta
+    , isSub, isDate, isTo,       isFrom 
+                   , isCategory, isAuthor
+    , fromOK
+    , firstUp
+    )
+where
 
+-- Extern 
 import Data.Char (toLower, toUpper)
-
-import Blog.DataDefinition
 import Text.JSON (Result(..))
 
+-- Intern
+import Blog.Definition
+
 peel :: MetaData -> String
-peel (Subject s) = s
-peel (Date    s) = s
-peel (From    s) = s
+peel (Subject s) = s 
+peel (Date    s) = s 
+peel (From    s) = s 
 peel (To      s) = concat s
 
 peel_ :: MetaData -> [String]
-peel_ (To      s) = s
+peel_ (To      s) = s 
 
 getMeta :: (MetaData -> Bool) -> [MetaData] -> MetaData
 getMeta f = head.(filter f)
@@ -34,7 +44,7 @@ isFrom (From _) = True
 isFrom _        = False
 
 fromOK :: Result a -> a
-fromOK (Ok x)    = x
+fromOK (Ok x)    = x 
 fromOK (Error x) = error $ "fromOK wasn't OK: " ++ x
 
 isAuthor    = isFrom
