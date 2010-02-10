@@ -25,6 +25,7 @@ instance TEXT (BlogText) where
 instance TEXT (Command) where
     toText (None)               = ""  
     toText (Break)              = ['\n']
+    toText (Block     body)     = ("\n\n") ++ (toText body)
     toText (Bold      body)     = (toText body)
     toText (Italic    body)     = (toText body)
     toText (Underline body)     = (toText body)
@@ -32,6 +33,8 @@ instance TEXT (Command) where
     toText (Section   body)     = (toText body)
     toText (Link      url body) = '[':(toText body) ++ "]" 
     toText (Code      src)      = src 
+    toText (Itemize   bodys)    = foldl1 (\r n -> r ++ "  * " ++ n) $ map toText bodys
+--    toText (Itemize   bodys)    = map ( ((flip (++)) "\n") . ((++) "  *") . toText ) bodys
 
 
 

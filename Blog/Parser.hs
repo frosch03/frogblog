@@ -1,5 +1,5 @@
 module Blog.Parser 
-    ()
+--()
 where
 
 -- Extern
@@ -42,33 +42,45 @@ pBlogText =
 
 pCommand =
     try ( do char '\n'
+             char '\n'
+             body <- pBlogText
+             return (Block body)
+        )
+    <|>
+    try ( do char '\n'
              return Break
         )
     <|>
-    do char '\\'
-       x <- try ( do result <- (pBlock "code")
-                     return (Code result)
-                )
-            <|>
-            try ( do name <- pCmdName
-                     body <- pCmdBody
-                     case name of
-                         "bold"      -> return (Bold body)
-                         "italic"    -> return (Italic body)
-                         "underline" -> return (Underline body)
-                         "strike"    -> return (Strike body)
-                         "section"   -> return (Section body)
-                         otherwise   -> return None
-                )
-            <|>
-                ( do name <- pCmdName
-                     conf <- pCmdConf
-                     body <- pCmdBody
-                     case name of
-                         "link"      -> return (Link conf body)
-                         otherwise   -> return None
-                )
-       return x
+    try ( do result <- (pItemize)
+             return (Itemize result)
+        )
+    <|>
+    try ( do x <- try ( do result <- (pCodeBlock)
+                           return (Code result)
+                      )
+                  <|>
+                  try ( do char '\\'
+                           name <- pCmdName
+                           body <- pCmdBody
+                           case name of
+                               "bold"      -> return (Bold body)
+                               "italic"    -> return (Italic body)
+                               "underline" -> return (Underline body)
+                               "strike"    -> return (Strike body)
+                               "section"   -> return (Section body)
+                               otherwise   -> return None
+                      )
+                  <|>
+                  try ( do char '\\'
+                           name <- pCmdName
+                           conf <- pCmdConf
+                           body <- pCmdBody
+                           case name of
+                               "link"      -> return (Link conf body)
+                               otherwise   -> return None
+                      )
+             return x
+        )
 
 -- Instance definitions
 -----------------------
@@ -110,22 +122,40 @@ pCategory        = do result <- many  $ noneOf ",\\{}[]%\n "
                       rspaces
                       return result
 
-pEmptyLine       = do spaces
-                      many1 (char '\n')
-
 pCmdName         = many1 $ noneOf "\\{}[]% "
-pCmdConf         = between (char '[') (char ']') pText
+pCmdConf         = between (char '[') (char ']') pLine
 pCmdBody         = between (char '{') (char '}') pBlogText
 
-pBlock blockType =
-    do string "begin"
+
+pItem' = 
+    do spaces
+       string "\\item"
+       spaces
+
+pItem = 
+    do pItem'
+       sepBy1 pBlogText pItem'
+
+pItemize = 
+    do pBlockBegin "itemize"
+       tmp    <- manyTill anyChar (try $ pBlockEnd "itemize")
+       case (runParser pItem () "" tmp) of
+          Left _   -> error "error while parsing itemize environment"
+          Right xs -> return xs
+
+pCodeBlock = 
+    do pBlockBegin "code"
+       result <- manyTill anyChar (try $ pBlockEnd "code")
+       return result
+       
+pBlockBegin blockType =
+    do string "\\begin"
        between (char '{') (char '}') (string blockType)
        spaces
-       result <- manyTill anyChar (try $ pBlockEnd blockType)
-       return result
 
 pBlockEnd blockType =
-    do string "\\end"
+    do spaces
+       string "\\end"
        between (char '{') (char '}') (string blockType)
        rspaces
 

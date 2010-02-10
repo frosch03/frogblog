@@ -1,5 +1,6 @@
 module Couch 
-    ( fetch
+    ( publishPosting
+    , fetch
     , limitTo
     , byDateTimeR
     , bySubject

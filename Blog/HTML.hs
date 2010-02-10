@@ -43,7 +43,8 @@ instance HTML (BlogText) where
 
 instance HTML (Command) where
     toHtml (None)               = noHtml
-    toHtml (Break)              = br
+    toHtml (Break)              = noHtml
+    toHtml (Block     body)     = p          << (toHtml body)
     toHtml (Bold      body)     = bold       << (toHtml body)
     toHtml (Italic    body)     = italics    << (toHtml body)
     toHtml (Underline body)     = thespan  ! [theclass "uline"]  $ (toHtml body)
@@ -52,4 +53,5 @@ instance HTML (Command) where
     toHtml (Link      url body) = toHtml   $ hotlink url (toHtml body)
     toHtml (Code      src)      = thediv   ! [theclass "code"]
                                 $ primHtml $ hscolour codeColor False src
+    toHtml (Itemize   bodys)    = ulist      << map (li.toHtml) bodys
 
