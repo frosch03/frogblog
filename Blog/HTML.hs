@@ -43,7 +43,7 @@ instance HTML (BlogText) where
 
 instance HTML (Command) where
     toHtml (None)               = noHtml
-    toHtml (Break)              = noHtml
+    toHtml (Break)              = primHtml " "
     toHtml (Block     body)     = p          << (toHtml body)
     toHtml (Bold      body)     = bold       << (toHtml body)
     toHtml (Italic    body)     = italics    << (toHtml body)

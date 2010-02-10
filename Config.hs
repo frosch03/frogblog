@@ -36,8 +36,8 @@ codeColor = ColourPrefs
               , keyglyph         = [Foreground Red]
               , layout           = [Foreground Cyan]
               , comment          = [Foreground Blue]
-              , conid            = [Normal]
-              , varid            = [Normal]
+              , conid            = [Foreground White]
+              , varid            = [Foreground White]
               , conop            = [Bold,Foreground Red]
               , varop            = [Foreground Cyan]
               , string           = [Foreground Magenta]
@@ -46,5 +46,5 @@ codeColor = ColourPrefs
               , cpp              = [Dim,Foreground Magenta]
               , selection        = [Bold, Foreground Magenta]
               , variantselection = [Dim, Foreground Red, Underscore]
-              , definition       = [Normal]
+              , definition       = [Foreground White]
               }   
