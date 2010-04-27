@@ -62,7 +62,7 @@ pnWrap :: Counts -> Html
 pnWrap (actPage, maxPage) = 
     thediv ! [theclass "prevnext"] $
          (   (if isNext then next else stringToHtml "[ oldr ")
-         +++ (if isPrev then prev else stringToHtml "| newr ]")
+         +++ (if isPrev then prev else stringToHtml "| newer ]")
          )
     where isNext  = (actPage < maxPage)
           isPrev  = (actPage > 0)
