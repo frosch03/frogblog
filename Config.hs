@@ -2,7 +2,7 @@ module Config
     ( pageTitle, styleSheet
     , blogURL, blogPath, blogName
     , pageStep
-    , dBaseServer, dBasePort, dBaseViewLocation, dBaseName
+    , dBase, dBasePort, dBaseViewLocation, dBaseName
     , codeColor
     )
 where
@@ -11,6 +11,8 @@ where
 import Text.XHtml.Strict 
 import Language.Haskell.HsColour.Colourise
 import Database.CouchDB (doc, db)
+import Network.URI (parseURI, URI)
+import Data.Maybe (fromJust, maybe)
 
 pageTitle :: String 
 pageTitle = "Confessions of a functional Mind"
@@ -18,17 +20,29 @@ pageTitle = "Confessions of a functional Mind"
 styleSheet :: Html
 styleSheet = thelink ! [rel "stylesheet", href "/log.css", thetype "text/css"] $ noHtml
 
-blogPath = "http://localhost/cgi-bin/"
-blogName = "testBlog.cgi"
+blogPath = "http://blog.frosch03.de/"
+blogName = "blogfrog.cgi"
 blogURL  = blogPath ++ blogName
 
 pageStep :: Int
 pageStep = 5 
 
-dBaseServer         = "localhost"
-dBasePort           = 5984 :: Int
+dBaseServerName     = "frosch03.de"
+dBasePort           = 5999 :: Int
+dBaseUser           = "frosch03"
+dBasePassword       = "hallo123"
+
+dBaseURI            =  "http://"
+                    ++ dBaseUser       ++ ":"
+                    ++ dBasePassword   ++ "@"
+                    ++ dBaseServerName ++ ":" 
+                    ++ show dBasePort  ++ "/"
+
+dBase = maybe (error "wrong Database URI") id 
+          (parseURI dBaseURI)
+
 dBaseViewLocation   = doc "views"
-dBaseName           = db "blog"
+dBaseName           = db "blogfrog"
 
 
 codeColor = ColourPrefs

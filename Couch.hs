@@ -1,12 +1,17 @@
 module Couch 
     ( publishPosting
+    , deletePosting
     , fetch
+    , fetchMeta
     , limitTo
     , byDateTimeR
     , bySubject
     , byCategory
     , allCategories
     , allAuthors
+    , allSubjects
+    , PublishCouch
+    , runCouch
     )
 where
 
@@ -29,17 +34,20 @@ import Data.Time.Clock.POSIX (getPOSIXTime)
 import Blog (BlogEntry)
 import Blog.Definition
 import Auxiliary (peel, peel_, getMeta, isSub, isAuthor, isCategory)
-import Config (dBaseServer, dBasePort, dBaseName, dBaseViewLocation)
+import Config (dBase, dBaseName, dBaseViewLocation)
 
 
 type PublishCouch = CouchMonad (Either String Rev)
 type FetchCouch a = CouchMonad [(Doc, a)]
+type DeleteCouch  = CouchMonad Bool
 type KeyCouch     = CouchMonad [String]
-type MetaCouch    = (FetchCouch BlogEntry, ([BlogEntry] -> [String]))
+type CouchQuery   = (FetchCouch BlogEntry, ([BlogEntry] -> [String]))
+
+runCouch = runCouchDBURI
 
 fetch :: FetchCouch a -> IO [a]
 fetch query =
-    do dBaseOutput <- runCouchDB dBaseServer dBasePort query
+    do dBaseOutput <- runCouch dBase query
        return (map snd dBaseOutput)
 
 limitTo :: IO [BlogEntry] -> MetaData -> IO [BlogEntry]
@@ -68,11 +76,14 @@ bySubject = query "bySubject" False
 byCategory :: FetchCouch BlogEntry
 byCategory = query "byCategory" False
 
-allCategories :: MetaCouch
+allCategories :: CouchQuery
 allCategories = (byDateTimeR, onlyCategories)
 
-allAuthors :: MetaCouch
+allAuthors :: CouchQuery
 allAuthors = (byDateTimeR, onlyAuthors)
+
+allSubjects :: CouchQuery
+allSubjects = (bySubject, onlySubjects)
 
 
 
@@ -83,7 +94,15 @@ publishPosting post =
        docName <- return $ doc.show $ now
        newNamedDoc dBaseName docName post
 
-fetchMeta :: MetaCouch -> IO [String]
+deletePosting :: MetaData -> IO Bool 
+deletePosting (Subject sub) = 
+    do dBaseOutput  <- runCouch dBase bySubject
+       (matchID, _) <- return . head $ filter f dBaseOutput
+       runCouch dBase $ forceDeleteDoc dBaseName matchID
+    where f (_, (Entry mds _)) = (peel $ getMeta isSub mds) == sub
+
+
+fetchMeta :: CouchQuery -> IO [String]
 fetchMeta (query, f) =
     do dBaseOutput  <- fetch query
        dBaseOutput' <- return $ f dBaseOutput
@@ -108,3 +127,7 @@ onlyAuthors = nub . map (peelAuthorName . excerpAutor)
     where excerpAutor (Entry md _) = getMeta isAuthor md
           peelAuthorName (From x)  = x
 
+onlySubjects :: [BlogEntry] -> [String]
+onlySubjects = nub . map (peelSubName . excerpSubject)
+    where excerpSubject (Entry md _) = getMeta isSub md
+          peelSubName   (Subject xs) = xs

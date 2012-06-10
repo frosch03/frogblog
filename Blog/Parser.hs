@@ -1,3 +1,5 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
 module Blog.Parser 
 --()
 where
@@ -86,23 +88,23 @@ pCommand =
 -----------------------
 instance Read (MetaData) where
     readsPrec p s = case parse (choice [pString2Sub, pString2Date, pString2To, pString2From]) "" s of
-                        Left  _ -> []
+                        Left  _ -> error $ "error while parsing MetaData"
                         Right x -> [(x, "")]
 
 instance Read (BlogEntry) where
     readsPrec p s = case parse pBlogEntry "" s of
-                        Left  _ -> []
+                        Left  _ -> error $ "error while parsing BlogEntry"
                         Right x -> [(x, "")]
 
 instance Read (BlogText) where
     readsPrec p s = case parse pBlogText "" s of
-                        Left  _ -> []
+                        Left  _ -> error $ "error while parsing BlogText"
                         Right x -> [(x,"")]
 
 instance Read (Command) where
     readsPrec p s = case parse pCommand "" s of
                         Left  _ -> []
-                        Right x -> [(x, "")]
+                        Right x -> [(x, "error while parsing Command")]
 
 -- Supporting parsers
 ---------------------
