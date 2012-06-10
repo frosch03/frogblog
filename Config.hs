@@ -20,7 +20,7 @@ pageTitle = "Confessions of a functional Mind"
 styleSheet :: Html
 styleSheet = thelink ! [rel "stylesheet", href "/log.css", thetype "text/css"] $ noHtml
 
-blogPath = "http://blog.frosch03.de/"
+blogPath = "http://frosch03.de/"
 blogName = "blogfrog.cgi"
 blogURL  = blogPath ++ blogName
 
