@@ -16,7 +16,7 @@ import Blog
 import Blog.Definition
 import Blog.Text (shorten)
 import Couch ( fetch, limitTo
-             , byDateTimeR, bySubject, byCategory)
+             , byDateTimeR, bySubject)
 import Page (simplePosts, posts)
 
 main :: IO ()

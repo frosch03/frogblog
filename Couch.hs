@@ -6,12 +6,13 @@ module Couch
     , limitTo
     , byDateTimeR
     , bySubject
-    , byCategory
     , allCategories
     , allAuthors
     , allSubjects
     , PublishCouch
     , runCouch
+
+    , onlySubjects
     )
 where
 
@@ -72,9 +73,6 @@ byDateTimeR = query "allPosts" True
 
 bySubject :: FetchCouch BlogEntry
 bySubject = query "bySubject" False
-
-byCategory :: FetchCouch BlogEntry
-byCategory = query "byCategory" False
 
 allCategories :: CouchQuery
 allCategories = (byDateTimeR, onlyCategories)

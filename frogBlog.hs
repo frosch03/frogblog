@@ -18,8 +18,8 @@ dispatch =  [ ("publish", publish)
             , ("delete",  delete)
             ]
 
-runCouchDB' :: PublishCouch -> IO ()
-runCouchDB' couch = 
+runCouch' :: PublishCouch -> IO ()
+runCouch' couch = 
     do runCouch dBase couch
        return ()
 
@@ -37,7 +37,7 @@ publish (filename:_) =
         then error $ filename ++ " is not a valid FilePath"
         else do content    <- readFile filename
                 blogEntry  <- return $ (read content :: BlogEntry)
-                runCouchDB' $ publishPosting blogEntry
+                runCouch' $ publishPosting blogEntry
 
        
 
