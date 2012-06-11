@@ -7,12 +7,12 @@ module Config
     )
 where
 
--- Extern
 import Text.XHtml.Strict 
 import Language.Haskell.HsColour.Colourise
 import Database.CouchDB (doc, db)
 import Network.URI (parseURI, URI)
 import Data.Maybe (fromJust, maybe)
+
 
 pageTitle :: String 
 pageTitle = "Confessions of a functional Mind"
@@ -43,7 +43,6 @@ dBase = maybe (error "wrong Database URI") id
 
 dBaseViewLocation   = doc "views"
 dBaseName           = db "blogfrog"
-
 
 codeColor = ColourPrefs
               { keyword          = [Underscore,Foreground Green]
