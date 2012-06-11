@@ -30,7 +30,7 @@ pageStep = 5
 dBaseServerName     = "frosch03.de"
 dBasePort           = 5999 :: Int
 dBaseUser           = "frosch03"
-dBasePassword       = "hallo123"
+dBasePassword       = "SECRET"
 
 dBaseURI            =  "http://"
                     ++ dBaseUser       ++ ":"
