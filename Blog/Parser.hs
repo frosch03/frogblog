@@ -1,7 +1,6 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Blog.Parser 
---()
 where
 
 -- Extern
