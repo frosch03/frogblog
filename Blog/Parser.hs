@@ -48,6 +48,11 @@ pCommand =
              return (Block body)
         )
     <|>
+    try ( do string "\n> "
+             result <- (pCommandLine)
+             return (CommandLine result)
+        )
+    <|>
     try ( do char '\n'
              return Break
         )
@@ -113,6 +118,7 @@ rspaces          = skipMany (oneOf " \t\v\f\r")
 
 pText            = many1 $ noneOf "\\{}[]%"
 pLine            = many1 $ noneOf "\\{}[]%\n"
+pCommandLine     = many1 $ noneOf "\n"
 
 pString2Line     = many1 $ noneOf "\\{}[]%\n\""
 pString2Category = do result <- many  $ noneOf ",\\{}[]%\n\" "

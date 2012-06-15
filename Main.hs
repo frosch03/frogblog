@@ -54,10 +54,12 @@ postWithSubject sub =
 
 postsByCategory :: Category -> CGI CGIResult
 postsByCategory cat =
-    do entrys <- lift $ fetch byDateTimeR `limitTo` (To [cat])
-       output $ renderHtml (simplePosts entrys)
+    do entrys  <- lift $ fetch byDateTimeR `limitTo` (To [cat])
+       entrys' <- return $ map (shorten 5) entrys
+       output $ renderHtml (simplePosts entrys')
 
 postsByAuthor :: Author -> CGI CGIResult
 postsByAuthor author =
-    do entrys <- lift $ fetch byDateTimeR `limitTo` (From author)
-       output $ renderHtml (simplePosts entrys)
+    do entrys  <- lift $ fetch byDateTimeR `limitTo` (From author)
+       entrys' <- return $ map (shorten 5) entrys
+       output $ renderHtml (simplePosts entrys')
