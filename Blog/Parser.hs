@@ -42,15 +42,15 @@ pBlogText =
        return x
 
 pCommand =
-    try ( do string "\n> "
-             result <- (pCommandLine)
-             return (CommandLine result)
-        )
-    <|>
     try ( do char '\n'
              char '\n'
              body <- pBlogText
              return (Block body)
+        )
+    <|>
+    try ( do string "\n> "
+             result <- (pCommandLine)
+             return (CommandLine result)
         )
     <|>
     try ( do char '\n'

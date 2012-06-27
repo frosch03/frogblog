@@ -32,10 +32,11 @@ simpleSite f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
              +++ primHtml pageNav
-             +++ ( thediv ! [theclass "box"]
-                   $ thediv ! [theclass "blogblock"]
-                     $ f x
+             +++ (   thediv ! [theclass "box"]
+                     $ thediv ! [theclass "blogblock"]
+                       $ f x
                  )
+             -- +++ primHtml iFrameInstagram
              +++ primHtml pageFoot
              )
 
@@ -62,7 +63,7 @@ pnWrap :: Counts -> Html
 pnWrap (actPage, maxPage) = 
     thediv ! [theclass "prevnext"] $
          (   (if isNext then next else stringToHtml "[ oldr ")
-         +++ (if isPrev then prev else stringToHtml "| newer ]")
+         +++ (if isPrev then prev else stringToHtml "| newr ]")
          )
     where isNext  = (actPage < maxPage)
           isPrev  = (actPage > 0)
