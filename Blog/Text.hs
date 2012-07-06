@@ -41,7 +41,7 @@ instance TEXT (Command) where
 
 
 shorten :: Int -> BlogEntry -> BlogEntry
-shorten n (Entry md post) = Entry md (fromLines appendix short)
+shorten n (Entry md post) = Short md (fromLines appendix short)
     where lns      = lines $ toText post
           short    = take n lns 
           sub      = peel $ getMeta isSub md

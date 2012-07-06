@@ -24,7 +24,7 @@ instance HTML (BlogEntry) where
               from = getMeta isFrom meta
               to   = getMeta isTo   meta
     toHtml (Short meta entry) = thediv ! [theclass "entry"] 
-                              $     (textLink ("subject", sub,  sub) +++ toHtml date +++ br) 
+                              $     (linkify ("subject", sub, (toHtml sub)) +++ toHtml date +++ br) 
                                 +++ (toHtml entry +++ br) 
                                 +++ hr
                                 +++ (stringToHtml "From: " +++ toHtml from +++ br) 
@@ -37,12 +37,12 @@ instance HTML (BlogEntry) where
 instance HTML (MetaData) where
     toHtml (Subject x)  = h1 << (toHtml x)
     toHtml (Date    x)  = thespan ! [theclass "date"]     $ toHtml x
-    toHtml (From    x)  = thespan ! [theclass "author"]   $ linkify ("author", x, x)
-    toHtml (To  (x:[])) = thespan ! [theclass "category"] $ linkify ("category", x, x)
-    toHtml (To  (x:xs)) = thespan ! [theclass "category"] $ foldl fun (linkify ("category", x, x)) xs
+    toHtml (From    x)  = thespan ! [theclass "author"]   $ linkify ("author", x, stringToHtml x)
+    toHtml (To  (x:[])) = thespan ! [theclass "category"] $ linkify ("category", x, stringToHtml x)
+    toHtml (To  (x:xs)) = thespan ! [theclass "category"] $ foldl fun (linkify ("category", x, stringToHtml x)) xs
         where fun :: Html -> String -> Html
               fun done []   = done
-              fun done next = done +++ (stringToHtml ", " +++ linkify ("category", next, next))
+              fun done next = done +++ (stringToHtml ", " +++ linkify ("category", next, stringToHtml next))
 
 instance HTML (BlogText) where
     toHtml (Empty)          = noHtml

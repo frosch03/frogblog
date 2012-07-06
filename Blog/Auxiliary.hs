@@ -16,9 +16,9 @@ import Config
 type Parameter = String
 type Value     = String
 
-linkify :: (Parameter, Value, String) -> Html
-linkify ([],  val, text) = toHtml $ hotlink blogURL (stringToHtml text)
-linkify (par, val, text) = toHtml $ hotlink (blogURL ++ ('?' : par) ++ ('=' : val)) (stringToHtml text)
+linkify :: (Parameter, Value, Html) -> Html
+linkify ([],  val, htmltext) = toHtml $ hotlink blogURL htmltext
+linkify (par, val, htmltext) = toHtml $ hotlink (blogURL ++ ('?': par) ++ ('=' : val)) htmltext
 
 textLink :: (Parameter, Value, String) -> BlogText
 textLink ([],  _,   _   ) = Empty
