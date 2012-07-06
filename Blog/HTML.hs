@@ -13,26 +13,22 @@ import Auxiliary (peel, getMeta, isSub, isDate, isFrom, isTo)
 import Config
 
 instance HTML (BlogEntry) where
-    toHtml (Entry meta entry) = thediv ! [theclass "entry"] 
-                              $     (toHtml sub +++ toHtml date +++ br) 
-                                +++ (toHtml entry +++ br) 
-                                +++ hr
-                                +++ (stringToHtml "From: " +++ toHtml from +++ br) 
-                                +++ (stringToHtml "To: " +++ toHtml to +++ br) 
-        where sub  = getMeta isSub  meta
-              date = getMeta isDate meta
-              from = getMeta isFrom meta
-              to   = getMeta isTo   meta
-    toHtml (Short meta entry) = thediv ! [theclass "entry"] 
-                              $     (linkify ("subject", sub, (toHtml sub)) +++ toHtml date +++ br) 
-                                +++ (toHtml entry +++ br) 
-                                +++ hr
-                                +++ (stringToHtml "From: " +++ toHtml from +++ br) 
-                                +++ (stringToHtml "To: " +++ toHtml to +++ br) 
-        where sub  = peel $ getMeta isSub  meta
-              date = getMeta isDate meta
-              from = getMeta isFrom meta
-              to   = getMeta isTo   meta
+    toHtml (Entry meta entry) = entryToHtml (toHtml $ getMeta isSub meta)  meta entry
+    toHtml (Short meta entry) = entryToHtml (linkify ("subject", peel sub, toHtml sub)) meta entry
+                              where sub  = getMeta isSub  meta
+
+entryToHtml :: Html -> [MetaData] -> BlogText -> Html
+entryToHtml heading meta entry
+    = thediv ! [theclass "entry"] 
+    $     (heading +++ toHtml date +++ br) 
+      +++ (toHtml entry +++ br) 
+      +++ hr
+      +++ (stringToHtml "From: " +++ toHtml from +++ br) 
+      +++ (stringToHtml "To: " +++ toHtml to +++ br) 
+    where date = getMeta isDate meta
+          from = getMeta isFrom meta
+          to   = getMeta isTo   meta
+
 
 instance HTML (MetaData) where
     toHtml (Subject x)  = h1 << (toHtml x)
