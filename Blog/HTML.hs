@@ -8,8 +8,8 @@ import Language.Haskell.HsColour.InlineCSS
 
 -- Intern
 import Blog.Definition
-import Blog.Auxiliary (linkify)
-import Auxiliary (getMeta, isSub, isDate, isFrom, isTo)
+import Blog.Auxiliary (linkify, textLink)
+import Auxiliary (peel, getMeta, isSub, isDate, isFrom, isTo)
 import Config
 
 instance HTML (BlogEntry) where
@@ -20,6 +20,16 @@ instance HTML (BlogEntry) where
                                 +++ (stringToHtml "From: " +++ toHtml from +++ br) 
                                 +++ (stringToHtml "To: " +++ toHtml to +++ br) 
         where sub  = getMeta isSub  meta
+              date = getMeta isDate meta
+              from = getMeta isFrom meta
+              to   = getMeta isTo   meta
+    toHtml (Short meta entry) = thediv ! [theclass "entry"] 
+                              $     (textLink ("subject", sub,  sub) +++ toHtml date +++ br) 
+                                +++ (toHtml entry +++ br) 
+                                +++ hr
+                                +++ (stringToHtml "From: " +++ toHtml from +++ br) 
+                                +++ (stringToHtml "To: " +++ toHtml to +++ br) 
+        where sub  = peel $ getMeta isSub  meta
               date = getMeta isDate meta
               from = getMeta isFrom meta
               to   = getMeta isTo   meta

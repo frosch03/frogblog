@@ -16,6 +16,7 @@ type Author     = String
 
 data BlogEntry
     = Entry [MetaData] BlogText
+    | Short [MetaData] BlogText
     deriving (Show)
 
 data MetaData

@@ -125,7 +125,7 @@ pString2Category = do result <- many  $ noneOf ",\\{}[]%\n\" "
                       rspaces
                       return result
 
-pCategory        = do result <- many  $ noneOf ",\\{}[]%\n "
+pCategory        = do result <- many  $ noneOf ",\\{}[]%\n"
                       rspaces
                       return result
 
