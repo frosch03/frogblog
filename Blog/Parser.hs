@@ -21,7 +21,11 @@ pMeta =
     do many1 (choice [pMetaSub, pMetaDate, pMetaTo, pMetaFrom])
 
 pBlogText =
-    do x <- try ( do txt <- pLine
+    do x <- try ( do cmd <- many1 (pCommandLine)
+                     return (PureC $ CommandBlock cmd)
+                )
+            <|>
+            try ( do txt <- pLine
                      x   <- pBlogText
                      return (MixT txt x)
                 )
@@ -48,9 +52,8 @@ pCommand =
              return (Block body)
         )
     <|>
-    try ( do string "\n> "
-             result <- (pCommandLine)
-             return (CommandLine result)
+    try ( do result <- many1 (pCommandLine)
+             return (CommandBlock result)
         )
     <|>
     try ( do char '\n'
@@ -118,7 +121,10 @@ rspaces          = skipMany (oneOf " \t\v\f\r")
 
 pText            = many1 $ noneOf "\\{}[]%"
 pLine            = many1 $ noneOf "\\{}[]%\n"
-pCommandLine     = many1 $ noneOf "\n"
+pCommandLine     = do string "> "
+                      result <- many $ noneOf "\n"
+                      char '\n'
+                      return (result)
 
 pString2Line     = many1 $ noneOf "\\{}[]%\n\""
 pString2Category = do result <- many  $ noneOf ",\\{}[]%\n\" "

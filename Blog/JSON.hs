@@ -54,31 +54,31 @@ instance JSON (BlogText) where
               fromOK (Error x) = error x
 
 instance JSON (Command) where
-    showJSON (Break)         = JSObject $ toJSObject [ ("Break", JSNull) ]
-    showJSON (Block       x) = JSObject $ toJSObject [ ("Block", showJSON x) ]
-    showJSON (Bold        x) = JSObject $ toJSObject [ ("Bold", showJSON x) ]
-    showJSON (Italic      x) = JSObject $ toJSObject [ ("Italic", showJSON x) ]
-    showJSON (Underline   x) = JSObject $ toJSObject [ ("Underline", showJSON x) ]
-    showJSON (Strike      x) = JSObject $ toJSObject [ ("Strike", showJSON x) ]
-    showJSON (Section     x) = JSObject $ toJSObject [ ("Section", showJSON x) ]
-    showJSON (Link x y     ) = JSObject $ toJSObject [ ("Link", JSArray [ showJSON x, showJSON y ] ) ]
-    showJSON (CommandLine x) = JSObject $ toJSObject [ ("CommandLine", showJSON x) ]
-    showJSON (Code        x) = JSObject $ toJSObject [ ("Code", showJSON x) ]
-    showJSON (Itemize     x) = JSObject $ toJSObject [ ("Itemize", showJSON x) ]
-    showJSON (None)          = JSObject $ toJSObject [ ("None", JSNull) ]
+    showJSON (Break)          = JSObject $ toJSObject [ ("Break", JSNull) ]
+    showJSON (Block        x) = JSObject $ toJSObject [ ("Block", showJSON x) ]
+    showJSON (Bold         x) = JSObject $ toJSObject [ ("Bold", showJSON x) ]
+    showJSON (Italic       x) = JSObject $ toJSObject [ ("Italic", showJSON x) ]
+    showJSON (Underline    x) = JSObject $ toJSObject [ ("Underline", showJSON x) ]
+    showJSON (Strike       x) = JSObject $ toJSObject [ ("Strike", showJSON x) ]
+    showJSON (Section      x) = JSObject $ toJSObject [ ("Section", showJSON x) ]
+    showJSON (Link x y      ) = JSObject $ toJSObject [ ("Link", JSArray [ showJSON x, showJSON y ] ) ]
+    showJSON (CommandBlock x) = JSObject $ toJSObject [ ("CommandBlock", showJSON x) ]
+    showJSON (Code         x) = JSObject $ toJSObject [ ("Code", showJSON x) ]
+    showJSON (Itemize      x) = JSObject $ toJSObject [ ("Itemize", showJSON x) ]
+    showJSON (None)           = JSObject $ toJSObject [ ("None", JSNull) ]
     readJSON x = Ok $ case (fst.head $ jsObj) of
-                          "Break"       -> Break
-                          "Block"       -> Block       (fromOK.readJSON.snd.head $ jsObj)
-                          "Bold"        -> Bold        (fromOK.readJSON.snd.head $ jsObj)
-                          "Italic"      -> Italic      (fromOK.readJSON.snd.head $ jsObj)
-                          "Underline"   -> Underline   (fromOK.readJSON.snd.head $ jsObj)
-                          "Strike"      -> Strike      (fromOK.readJSON.snd.head $ jsObj)
-                          "Section"     -> Section     (fromOK.readJSON.snd.head $ jsObj)
-                          "Link"        -> Link        (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
-                          "CommandLine" -> CommandLine (fromOK.readJSON.snd.head $ jsObj)
-                          "Code"        -> Code        (fromOK.readJSON.snd.head $ jsObj)
-                          "Itemize"     -> Itemize     (map (fromOK.readJSON) (fromOK.readJSONs.snd.head $ jsObj))
-                          "None"        -> None
+                          "Break"        -> Break
+                          "Block"        -> Block        (fromOK.readJSON.snd.head $ jsObj)
+                          "Bold"         -> Bold         (fromOK.readJSON.snd.head $ jsObj)
+                          "Italic"       -> Italic       (fromOK.readJSON.snd.head $ jsObj)
+                          "Underline"    -> Underline    (fromOK.readJSON.snd.head $ jsObj)
+                          "Strike"       -> Strike       (fromOK.readJSON.snd.head $ jsObj)
+                          "Section"      -> Section      (fromOK.readJSON.snd.head $ jsObj)
+                          "Link"         -> Link         (fromOK.jsonString.head.fromOK.readJSONs.snd.head $ jsObj) (fromOK.readJSON.head.(drop 1).fromOK.readJSONs.snd.head $ jsObj)
+                          "CommandBlock" -> CommandBlock (map (fromOK.readJSON) (fromOK.readJSONs.snd.head $ jsObj))
+                          "Code"         -> Code         (fromOK.readJSON.snd.head $ jsObj)
+                          "Itemize"      -> Itemize      (map (fromOK.readJSON) (fromOK.readJSONs.snd.head $ jsObj))
+                          "None"         -> None
         where jsObj = fromOK.jsonObject $ x
               fromOK (Ok x)    = x
               fromOK (Error x) = error x

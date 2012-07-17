@@ -36,15 +36,15 @@ data BlogText
 
 data Command
     = Break
-    | Block       BlogText
-    | Bold        BlogText
-    | Italic      BlogText
-    | Underline   BlogText
-    | Strike      BlogText
-    | Section     BlogText
-    | Link URL    BlogText
-    | Itemize    [BlogText]
-    | Code        String
-    | CommandLine String
+    | Block         BlogText
+    | Bold          BlogText
+    | Italic        BlogText
+    | Underline     BlogText
+    | Strike        BlogText
+    | Section       BlogText
+    | Link URL      BlogText
+    | Itemize      [BlogText]
+    | Code          String
+    | CommandBlock [String]
     | None
     deriving (Show)

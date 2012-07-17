@@ -50,15 +50,15 @@ instance HTML (BlogText) where
 instance HTML (Command) where
     toHtml (None)                 = noHtml
     toHtml (Break)                = primHtml " "
-    toHtml (Block       body)     = p          << (toHtml body)
-    toHtml (Bold        body)     = bold       << (toHtml body)
-    toHtml (Italic      body)     = italics    << (toHtml body)
-    toHtml (Underline   body)     = thespan  ! [theclass "uline"]  $ (toHtml body)
-    toHtml (Strike      body)     = thespan  ! [theclass "strike"] $ (toHtml body)
-    toHtml (Section     body)     = h2         << (toHtml body)
-    toHtml (Link        url body) = toHtml   $ hotlink url (toHtml body)
-    toHtml (CommandLine body)     = thediv   ! [theclass "commandline"] $ (toHtml body)
-    toHtml (Code        src)      = thediv   ! [theclass "code"]
+    toHtml (Block        body)     = p          << (toHtml body)
+    toHtml (Bold         body)     = bold       << (toHtml body)
+    toHtml (Italic       body)     = italics    << (toHtml body)
+    toHtml (Underline    body)     = thespan  ! [theclass "uline"]  $ (toHtml body)
+    toHtml (Strike       body)     = thespan  ! [theclass "strike"] $ (toHtml body)
+    toHtml (Section      body)     = h2         << (toHtml body)
+    toHtml (Link         url body) = toHtml   $ hotlink url (toHtml body)
+    toHtml (CommandBlock bodys)    = thediv   ! [theclass "commandblock"] << (map toHtml bodys)
+    toHtml (Code         src)      = thediv   ! [theclass "code"]
                                   $ primHtml $ hscolour codeColor False src
-    toHtml (Itemize     bodys)    = ulist      << map (li.toHtml) bodys
+    toHtml (Itemize      bodys)    = ulist      << map (li.toHtml) bodys
 
