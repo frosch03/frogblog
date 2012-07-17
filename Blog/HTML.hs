@@ -57,7 +57,7 @@ instance HTML (Command) where
     toHtml (Strike       body)     = thespan  ! [theclass "strike"] $ (toHtml body)
     toHtml (Section      body)     = h2         << (toHtml body)
     toHtml (Link         url body) = toHtml   $ hotlink url (toHtml body)
-    toHtml (CommandBlock bodys)    = thediv   ! [theclass "commandblock"] << (map toHtml bodys)
+    toHtml (CommandBlock bodys)    = thediv   ! [theclass "commandblock"] << ((map toHtml bodys) +++ br)
     toHtml (Code         src)      = thediv   ! [theclass "code"]
                                   $ primHtml $ hscolour codeColor False src
     toHtml (Itemize      bodys)    = ulist      << map (li.toHtml) bodys
