@@ -4,7 +4,6 @@ module HtmlSnippets
     , pageFoot
     , akvsHead
     , akvsBody
-    , iFrameInstagram
     )
 where
 
@@ -12,29 +11,18 @@ pageHead :: String
 pageHead = concat $ 
       "    <div class=\"top\">\n"
     : "    <a name=\"top\"></a>\n"
-    : "    <img src=\"../img/www.png\" alt=\"www.frosch03.de\" />\n"
+    : "    <img src=\"../img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
     : "    </div>\n"
     : [[]]
 
 
 pageNav :: String
 pageNav = concat $
-      "    <div class=\"left\">\n"
-    : "    <pre class=\"navi\"> \n"
-    : "  Table of Content \n"
+      "  Table of Content \n"
     : "--------------------- \n"
-    : "  1) <a href=\"index.html#intro\">introduction</a>\n"
-    : "  2) <a href=\"index.html#about\">about me</a>\n"
-    : "  3) <a href=\"index.html#publi\">pulications</a>\n"
-    : "\n"
-    : "  4) <a href=\"index.html#secur\">security project</a>\n"
-    : "  5) <a href=\"index.html#picts\">pictures</a>\n"
-    : "  6) <a href=\"index.html#brain\">brainfuck</a>\n"
-    : "  7) <a href=\"index.html#conts\">contact me</a>\n"
-    : "  8) <a href=\"index.html#links\">links</a>\n"
-    : "\n"
-    : "    </pre>\n"
-    : "    </div>\n"
+    : "  1) <a href=\"http://frosch03.de\">Blog</a>\n"
+    : "  2) <a href=\"http://frosch03.de/pad/\">Pads</a>\n"
+    : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
     : [[]]
 
 pageFoot :: String
@@ -121,11 +109,4 @@ akvsBody = concat $
     : "<div id=\"akct\"><a id=\"akpeel\" href=\"http://www.vorratsdatenspeicherung.de\" title=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp; handeln!\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvst.gif\" alt=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp;handeln!\" /></a>\n"
     : "<a id=\"akpreload\" href=\"http://wiki.vorratsdatenspeicherung.de/?title=Online-Demo\" title=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvsi.gif\" alt=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\" /></a></div>\n"
     : "<!-- AKVS body end -->\n"
-    : [[]]
-
-iFrameInstagram :: String
-iFrameInstagram = concat $ 
-      "<iframe src=\"http://widget.stagram.com/in/frosch03/?s=100&w=2&h=3&b=1&bg=333333&p=5\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"no\" style=\"border:none;overflow:hidden;width:230px; height: 345px\" > \n"
-    : "</iframe> \n"
-    : "<!-- Webstagram - web.stagram.com -->\n"
     : [[]]

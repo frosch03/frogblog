@@ -27,11 +27,19 @@ posts pageNum bs = site counts renderPostings bs'
           counts  = (pageNum, pageMax)
 
 
+navigation :: Html
+navigation 
+    = thediv ! [theclass "left"] $
+    (   pre ! [theclass "navi"] $ primHtml pageNav
+    +++ br
+    +++ primHtml pageNav
+    )
+
 simpleSite :: (a -> Html) -> a -> Html
 simpleSite f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
-             +++ primHtml pageNav
+             +++ navigation
              +++ (   thediv ! [theclass "box"]
                      $ thediv ! [theclass "blogblock"]
                        $ f x
