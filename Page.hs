@@ -26,7 +26,9 @@ newtype Date = D (Year, Month, Day)
 
 dynNav :: Date -> Html
 dynNav (D (year, month, day))
-    =   toHtml (show year)
+    =   hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest") +++ br
+    +++ hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month)))  +++ br
+    +++ toHtml (show year)
     +++ toHtml "-"
     +++ toHtml (show month)
     +++ toHtml "-"
@@ -45,11 +47,15 @@ posts date pageNum bs = site date counts renderPostings bs'
 
 
 staticNav :: Html
-staticNav 
+staticNav = primHtml pageNav
+
+navigation :: Html
+navigation
     = thediv ! [theclass "left"] $
-    (   pre ! [theclass "navi"] $ primHtml pageNav
-    +++ br
-    +++ primHtml pageNav
+    (   pre ! [theclass "navi"] $ 
+            staticNav
+        +++ br
+        +++ dynNav 
     )
 
 simpleSite :: Date -> (a -> Html) -> a -> Html

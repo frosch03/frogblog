@@ -49,7 +49,7 @@ current
          day  <- return (formatTime defaultTimeLocale "%d" now)
          mon  <- return (formatTime defaultTimeLocale "%m" now)
          year <- return (formatTime defaultTimeLocale "%Y" now)
-         return $ D ((read day), (read mon), (read year))
+         return $ D ((read year), (read mon), (read day))
 --
 
 try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
