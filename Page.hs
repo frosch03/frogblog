@@ -1,7 +1,7 @@
 module Page
-    ( simplePosts 
-    , posts
-    )
+--  ( simplePosts 
+--  , posts
+--  )
 where
 
 -- Extern 
@@ -15,31 +15,49 @@ import Config
 
 type Counts = (Int, Int)
 
+--
+type Navigation = Html
 
-simplePosts :: [BlogEntry] -> Html
-simplePosts = simpleSite renderPostings
+type Day   = Int
+type Month = Int
+type Year  = Int
 
-posts :: Int -> [BlogEntry] -> Html
-posts pageNum bs = site counts renderPostings bs'
+newtype Date = D (Year, Month, Day)
+
+dynNav :: Date -> Html
+dynNav (D (year, month, day))
+    =   toHtml (show year)
+    +++ toHtml "-"
+    +++ toHtml (show month)
+    +++ toHtml "-"
+    +++ toHtml (show day)
+--
+
+simplePosts :: Date -> [BlogEntry] -> Html
+simplePosts date = simpleSite date renderPostings
+
+posts :: Date -> Int -> [BlogEntry] -> Html
+posts date pageNum bs = site date counts renderPostings bs'
     where bs'     = (take pageStep) . (drop skip) $ bs
           skip    = pageStep * pageNum
           pageMax = (length bs) `div` pageStep
           counts  = (pageNum, pageMax)
 
 
-navigation :: Html
-navigation 
+staticNav :: Html
+staticNav 
     = thediv ! [theclass "left"] $
     (   pre ! [theclass "navi"] $ primHtml pageNav
     +++ br
     +++ primHtml pageNav
     )
 
-simpleSite :: (a -> Html) -> a -> Html
-simpleSite f x =   htmlHead
+simpleSite :: Date -> (a -> Html) -> a -> Html
+simpleSite date f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
-             +++ navigation
+             +++ staticNav
+             +++ dynNav date
              +++ (   thediv ! [theclass "box"]
                      $ thediv ! [theclass "blogblock"]
                        $ f x
@@ -48,8 +66,8 @@ simpleSite f x =   htmlHead
              +++ primHtml pageFoot
              )
 
-site :: Counts -> (a -> Html) -> a -> Html
-site cs f = simpleSite $ pnNavi cs f
+site :: Date -> Counts -> (a -> Html) -> a -> Html
+site date cs f = simpleSite date $ pnNavi cs f
 
 
 renderPostings :: [BlogEntry] -> Html
@@ -77,23 +95,3 @@ pnWrap (actPage, maxPage) =
           isPrev  = (actPage > 0)
           next    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage+1))) (stringToHtml "[ older ")
           prev    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage-1))) (stringToHtml "| newer ]")
-
-
--- needed ???
-renderHeadings :: [[MetaData]] -> Html
-renderHeadings []       = noHtml
-renderHeadings (md:mds) =   (   (   sub
-                                +++ date
-                                +++ stringToHtml " by "
-                                +++ from
-                                )
-                            )
-                        +++ renderHeadings mds
-    where sub  = getMeta isSub  md
-          date = getMeta isDate md
-          from = getMeta isFrom md
-
-headings :: [[MetaData]] -> Html
-headings = simpleSite renderHeadings
--------------
-

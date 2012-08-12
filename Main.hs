@@ -11,55 +11,78 @@ import Control.Monad.Trans (lift)
 
 import Data.Maybe (isJust, fromJust)
 
+import Data.Time.Clock (getCurrentTime)
+import Data.Time.Format (formatTime)
+import System.Locale (defaultTimeLocale)
+
 -- Intern
 import Blog
 import Blog.Definition
 import Blog.Text (shorten)
 import Couch ( fetch, limitTo
              , byDateTimeR, bySubject)
-import Page (simplePosts, posts)
+import Page -- (simplePosts, posts)
 
 main :: IO ()
-main = runCGI $ handleErrors (cgiMain)
+main = do d <- current 
+          runCGI $ handleErrors (cgiMain d)
 
-cgiMain :: CGI CGIResult
-cgiMain = try "page"     page
-        $ try "subject"  postWithSubject
-        $ try "author"   postsByAuthor 
-        $ try "category" postsByCategory
-        $ pageDefault
+cgiMain :: Date -> CGI CGIResult
+cgiMain d
+    = try "page"     (page d)
+    $ try "subject"  (postWithSubject d)
+    $ try "author"   (postsByAuthor  d)
+    $ try "category" (postsByCategory d)
+    $ pageDefault d
+
+--
+data Filter 
+    = LatestByDate
+    | ThisMonth
+    | LastMonth
+    | ThisYearByMonth
+    | BySubject
+
+current :: IO Date
+current 
+    = do now  <- getCurrentTime
+         day  <- return (formatTime defaultTimeLocale "%d" now)
+         mon  <- return (formatTime defaultTimeLocale "%m" now)
+         year <- return (formatTime defaultTimeLocale "%Y" now)
+         return $ D ((read day), (read mon), (read year))
+--
 
 try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
 try s f def = do tmp <- getInput s
                  maybe def f tmp 
 
-page :: String -> CGI CGIResult
-page p = 
+page :: Date -> String -> CGI CGIResult
+page d p = 
     do entrys  <- lift $ fetch byDateTimeR
        entrys' <- return $ map (shorten 5) entrys
        p'      <- return $ ((read p) :: Int)
-       output $ renderHtml (posts p' entrys') 
+       output $ renderHtml (posts d p' entrys') 
 
-pageDefault :: CGI CGIResult
-pageDefault =
+pageDefault :: Date -> CGI CGIResult
+pageDefault d =
     do entrys  <- lift $ fetch byDateTimeR
        entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (posts 0 entrys')
+       output $ renderHtml (posts d 0 entrys')
 --       output $ renderHtml (simplePosts entrys')
 
-postWithSubject :: Category -> CGI CGIResult
-postWithSubject sub =
+postWithSubject :: Date -> Category -> CGI CGIResult
+postWithSubject d sub =
     do entry <- lift $ fetch bySubject `limitTo` (Subject sub)
-       output $ renderHtml (simplePosts entry)
+       output $ renderHtml (simplePosts d entry)
 
-postsByCategory :: Category -> CGI CGIResult
-postsByCategory cat =
+postsByCategory :: Date -> Category -> CGI CGIResult
+postsByCategory d cat =
     do entrys  <- lift $ fetch byDateTimeR `limitTo` (To [cat])
        entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (simplePosts entrys')
+       output $ renderHtml (simplePosts d entrys')
 
-postsByAuthor :: Author -> CGI CGIResult
-postsByAuthor author =
+postsByAuthor :: Date -> Author -> CGI CGIResult
+postsByAuthor d author =
     do entrys  <- lift $ fetch byDateTimeR `limitTo` (From author)
        entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (simplePosts entrys')
+       output $ renderHtml (simplePosts d entrys')
