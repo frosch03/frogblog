@@ -1,3 +1,6 @@
+-- Change the Settings to your need and rename this file to Config.hs
+
+
 module Config
     ( pageTitle, styleSheet
     , blogURL, blogPath, blogName
@@ -14,23 +17,30 @@ import Network.URI (parseURI, URI)
 import Data.Maybe (fromJust, maybe)
 
 
+-- The Page-Title String
 pageTitle :: String 
-pageTitle = "Confessions of a functional Mind"
+pageTitle = ""
 
+-- The CSS file for the blog
 styleSheet :: Html
 styleSheet = thelink ! [rel "stylesheet", href "/log.css", thetype "text/css"] $ noHtml
 
-blogPath = "http://frosch03.de/"
+
+-- The domain of your blog
+blogPath = "http://yoururl.com/"
 blogName = "blogfrog.cgi"
 blogURL  = blogPath ++ blogName
 
 pageStep :: Int
 pageStep = 5 
 
-dBaseServerName     = "frosch03.de"
+-- The Server Name of the CouchDB
+dBaseServerName     = "couchdbserver"
 dBasePort           = 5999 :: Int
-dBaseUser           = "frosch03"
-dBasePassword       = ""
+
+-- The CouchDB user and password that is allowed to read the Blog
+dBaseUser           = "username"
+dBasePassword       = "password"
 
 dBaseURI            =  "http://"
                     ++ dBaseUser       ++ ":"

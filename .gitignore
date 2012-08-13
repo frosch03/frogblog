@@ -1,0 +1,5 @@
+Config.hs
+*.hi
+*.o
+blogfrog.cgi
+frogblog
