@@ -24,6 +24,20 @@ type Year  = Int
 
 newtype Date = D (Year, Month, Day)
 
+data Filter 
+    = LatestByDate
+    | ThisMonth
+    | LastMonth
+    | ThisYearByMonth
+    | BySubject
+
+    | ThisSubject  String
+    | ThisPage     Int
+    | ThisAuthor   String
+    | ThisCategory String
+
+data BlogState = BS Date Filter
+
 dynNav :: Date -> Html
 dynNav (D (year, month, day))
     =          stringToHtml "  Blog Navigation"
@@ -39,11 +53,11 @@ dynNav (D (year, month, day))
 --    = 
 --
 
-simplePosts :: Date -> [BlogEntry] -> Html
-simplePosts date = simpleSite date renderPostings
+simplePosts :: BlogState -> [BlogEntry] -> Html
+simplePosts (BS date _) = simpleSite date renderPostings
 
-posts :: Date -> Int -> [BlogEntry] -> Html
-posts date pageNum bs = site date counts renderPostings bs'
+posts :: BlogState -> Int -> [BlogEntry] -> Html
+posts (BS date _) pageNum bs = site date counts renderPostings bs'
     where bs'     = (take pageStep) . (drop skip) $ bs
           skip    = pageStep * pageNum
           pageMax = (length bs) `div` pageStep

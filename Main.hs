@@ -34,26 +34,13 @@ cgiMain d
          renderPageByState (BS date filter)
 
 --
-data Filter 
-    = LatestByDate
-    | ThisMonth
-    | LastMonth
-    | ThisYearByMonth
-    | BySubject
-
-    | ThisSubject  String
-    | ThisPage     Int
-    | ThisAuthor   String
-    | ThisCategory String
-
-data BlogState = BS Date Filter
 
 getFilter :: CGI Filter
 getFilter
-    = try_ "page"      (return . ThisPage . read)
-    $ try_ "subject"   (return . ThisSubject)
-    $ try_ "author"    (return . ThisAuthor)
-    $ try_ "category"  (return . ThisCategory)
+    = try "page"      (return . ThisPage . read)
+    $ try "subject"   (return . ThisSubject)
+    $ try "author"    (return . ThisAuthor)
+    $ try "category"  (return . ThisCategory)
     $ (return LatestByDate)
     
 
@@ -65,69 +52,44 @@ current
          year <- return (formatTime defaultTimeLocale "%Y" now)
          return $ D ((read year), (read mon), (read day))
 
+
+getAllEntrys  v     = lift $ fetch v
+getSomeEntrys v p f = lift $ fetch v `p` f
+
+genAbstract e = return $ map (shorten 5) e
+
+renderPagedPosting state v page
+    = do entrys    <- getAllEntrys v
+         abstracts <- genAbstract entrys
+         output $ renderHtml (posts state page abstracts) 
+
+renderSingelPost state v p f 
+    = do entrys  <- getSomeEntrys v p f
+         output $ renderHtml (simplePosts state entrys)
+
+renderSimpleAbstracts state v p f
+    = do entrys    <- getSomeEntrys v p f 
+         abstracts <- genAbstract entrys
+         output $ renderHtml (simplePosts state abstracts)
+
+
+
 renderPageByState :: BlogState -> CGI CGIResult
-renderPageByState (BS date (ThisPage cnt))
-    = do entrys  <- lift $ fetch byDateTimeR
-         entrys' <- return $ map (shorten 5) entrys
-         output $ renderHtml (posts date cnt entrys') 
+renderPageByState state@(BS date (ThisPage cnt))
+    = renderPagedPosting state byDateTimeR cnt
 
-renderPageByState (BS date (ThisSubject sub))
-    = do entry <- lift $ fetch bySubject `limitTo` (Subject sub)
-         output $ renderHtml (simplePosts date entry)
+renderPageByState state@(BS date (ThisSubject sub))
+    = renderSingelPost state bySubject limitTo (Subject sub)
 
-renderPageByState (BS date (ThisAuthor author))
-    = do entrys  <- lift $ fetch byDateTimeR `limitTo` (From author)
-         entrys' <- return $ map (shorten 5) entrys
-         output $ renderHtml (simplePosts date entrys')
+renderPageByState state@(BS date (ThisAuthor author))
+    = renderSimpleAbstracts state byDateTimeR limitTo (From author)
 
-renderPageByState (BS date (ThisCategory cat))
-    = do entrys  <- lift $ fetch byDateTimeR `limitTo` (To [cat])
-         entrys' <- return $ map (shorten 5) entrys
-         output $ renderHtml (simplePosts date entrys')
+renderPageByState state@(BS date (ThisCategory cat))
+    = renderSimpleAbstracts state byDateTimeR limitTo (To [cat])
 
-renderPageByState (BS date LatestByDate)
-    = do entrys  <- lift $ fetch byDateTimeR
-         entrys' <- return $ map (shorten 5) entrys
-         output $ renderHtml (posts date 0 entrys')
---       output $ renderHtml (simplePosts entrys')
+renderPageByState state@(BS date LatestByDate)
+    = renderPagedPosting state byDateTimeR 0
 
-try_ :: String -> (String -> CGI Filter) -> CGI Filter -> CGI Filter
-try_ s f def = do tmp <- getInput s
-                  maybe def f tmp 
---
-
-
-try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
+try :: String -> (String -> CGI Filter) -> CGI Filter -> CGI Filter
 try s f def = do tmp <- getInput s
                  maybe def f tmp 
-
-page :: Date -> String -> CGI CGIResult
-page d p = 
-    do entrys  <- lift $ fetch byDateTimeR
-       entrys' <- return $ map (shorten 5) entrys
-       p'      <- return $ ((read p) :: Int)
-       output $ renderHtml (posts d p' entrys') 
-
-pageDefault :: Date -> CGI CGIResult
-pageDefault d =
-    do entrys  <- lift $ fetch byDateTimeR
-       entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (posts d 0 entrys')
---       output $ renderHtml (simplePosts entrys')
-
-postWithSubject :: Date -> Category -> CGI CGIResult
-postWithSubject d sub =
-    do entry <- lift $ fetch bySubject `limitTo` (Subject sub)
-       output $ renderHtml (simplePosts d entry)
-
-postsByCategory :: Date -> Category -> CGI CGIResult
-postsByCategory d cat =
-    do entrys  <- lift $ fetch byDateTimeR `limitTo` (To [cat])
-       entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (simplePosts d entrys')
-
-postsByAuthor :: Date -> Author -> CGI CGIResult
-postsByAuthor d author =
-    do entrys  <- lift $ fetch byDateTimeR `limitTo` (From author)
-       entrys' <- return $ map (shorten 5) entrys
-       output $ renderHtml (simplePosts d entrys')
