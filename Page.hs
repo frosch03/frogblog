@@ -26,13 +26,13 @@ newtype Date = D (Year, Month, Day)
 
 dynNav :: Date -> Html
 dynNav (D (year, month, day))
-    =   hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest") +++ br
-    +++ hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month)))  +++ br
-    +++ toHtml (show year)
-    +++ toHtml "-"
-    +++ toHtml (show month)
-    +++ toHtml "-"
-    +++ toHtml (show day)
+    =          stringToHtml "  Blog Navigation"
+    +++ br +++ stringToHtml "-------------------"
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month))) (stringToHtml "this month"))
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "last month"
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
 --
 
 simplePosts :: Date -> [BlogEntry] -> Html
@@ -49,21 +49,20 @@ posts date pageNum bs = site date counts renderPostings bs'
 staticNav :: Html
 staticNav = primHtml pageNav
 
-navigation :: Html
-navigation
+navigation :: Date -> Html
+navigation d
     = thediv ! [theclass "left"] $
     (   pre ! [theclass "navi"] $ 
             staticNav
         +++ br
-        +++ dynNav 
+        +++ dynNav d
     )
 
 simpleSite :: Date -> (a -> Html) -> a -> Html
 simpleSite date f x =   htmlHead
          +++ body
          <<  (   primHtml pageHead
-             +++ staticNav
-             +++ dynNav date
+             +++ navigation date
              +++ (   thediv ! [theclass "box"]
                      $ thediv ! [theclass "blogblock"]
                        $ f x
