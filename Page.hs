@@ -33,6 +33,10 @@ dynNav (D (year, month, day))
     +++ br +++ stringToHtml "  * " +++ stringToHtml "last month"
     +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
     +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
+
+--renderPage :: PageState -> Html
+--renderPage (PS date filter)
+--    = 
 --
 
 simplePosts :: Date -> [BlogEntry] -> Html

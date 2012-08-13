@@ -29,11 +29,9 @@ main = do d <- current
 
 cgiMain :: Date -> CGI CGIResult
 cgiMain d
-    = try "page"     (page d)
-    $ try "subject"  (postWithSubject d)
-    $ try "author"   (postsByAuthor  d)
-    $ try "category" (postsByCategory d)
-    $ pageDefault d
+    = do filter <- getFilter
+         date   <- return d
+         renderPageByState (BS date filter)
 
 --
 data Filter 
@@ -43,6 +41,22 @@ data Filter
     | ThisYearByMonth
     | BySubject
 
+    | ThisSubject  String
+    | ThisPage     Int
+    | ThisAuthor   String
+    | ThisCategory String
+
+data BlogState = BS Date Filter
+
+getFilter :: CGI Filter
+getFilter
+    = try_ "page"      (return . ThisPage . read)
+    $ try_ "subject"   (return . ThisSubject)
+    $ try_ "author"    (return . ThisAuthor)
+    $ try_ "category"  (return . ThisCategory)
+    $ (return LatestByDate)
+    
+
 current :: IO Date
 current 
     = do now  <- getCurrentTime
@@ -50,7 +64,38 @@ current
          mon  <- return (formatTime defaultTimeLocale "%m" now)
          year <- return (formatTime defaultTimeLocale "%Y" now)
          return $ D ((read year), (read mon), (read day))
+
+renderPageByState :: BlogState -> CGI CGIResult
+renderPageByState (BS date (ThisPage cnt))
+    = do entrys  <- lift $ fetch byDateTimeR
+         entrys' <- return $ map (shorten 5) entrys
+         output $ renderHtml (posts date cnt entrys') 
+
+renderPageByState (BS date (ThisSubject sub))
+    = do entry <- lift $ fetch bySubject `limitTo` (Subject sub)
+         output $ renderHtml (simplePosts date entry)
+
+renderPageByState (BS date (ThisAuthor author))
+    = do entrys  <- lift $ fetch byDateTimeR `limitTo` (From author)
+         entrys' <- return $ map (shorten 5) entrys
+         output $ renderHtml (simplePosts date entrys')
+
+renderPageByState (BS date (ThisCategory cat))
+    = do entrys  <- lift $ fetch byDateTimeR `limitTo` (To [cat])
+         entrys' <- return $ map (shorten 5) entrys
+         output $ renderHtml (simplePosts date entrys')
+
+renderPageByState (BS date LatestByDate)
+    = do entrys  <- lift $ fetch byDateTimeR
+         entrys' <- return $ map (shorten 5) entrys
+         output $ renderHtml (posts date 0 entrys')
+--       output $ renderHtml (simplePosts entrys')
+
+try_ :: String -> (String -> CGI Filter) -> CGI Filter -> CGI Filter
+try_ s f def = do tmp <- getInput s
+                  maybe def f tmp 
 --
+
 
 try :: String -> (String -> CGI CGIResult) -> CGI CGIResult -> CGI CGIResult
 try s f def = do tmp <- getInput s
