@@ -81,10 +81,14 @@ dynNav (D (year, month, day))
     =          stringToHtml "  Blog Navigation"
     +++ br +++ stringToHtml "-------------------"
     +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month))) (stringToHtml "this month"))
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "last month"
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "month") ++ ('=': (month2string month)))             (stringToHtml "this month"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "month") ++ ('=': (month2string $ lastMonth month))) (stringToHtml "last month"))
+--  +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
+--  +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
+
+    where month2string m = if m < 10 then '0': (show m)
+                                     else (show m)
+          lastMonth m = if m == 1 then 1 else (m-1)
 
 
 staticNav :: Html
