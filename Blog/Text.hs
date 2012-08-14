@@ -1,6 +1,5 @@
 module Blog.Text 
-    ( shorten
-    , fromLines
+    ( fromLines
     , TEXT(..)
     )
 where
@@ -8,7 +7,6 @@ where
 -- Intern
 import Blog.Definition
 import Blog.Auxiliary (textLink)
-import Auxiliary (peel, getMeta, isSub)
 import Config
 
 class TEXT a where
@@ -41,13 +39,6 @@ instance TEXT (Command) where
 
 
 
-
-shorten :: Int -> BlogEntry -> BlogEntry
-shorten n (Entry md post) = Short md (fromLines appendix short)
-    where lns      = lines $ toText post
-          short    = take n lns 
-          sub      = peel $ getMeta isSub md
-          appendix = (textLink ("subject", sub, " (more)... "))
 
 type Appendix = BlogText
 fromLines :: Appendix -> [String] -> BlogText

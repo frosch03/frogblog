@@ -13,6 +13,8 @@ module Couch
     , runCouch
 
     , onlySubjects
+    , getAllEntrys
+    , getSomeEntrys
     )
 where
 
@@ -31,11 +33,15 @@ import Control.Monad.Reader
 
 import Data.Time.Clock.POSIX (getPOSIXTime)
 
+import Text.Regex.Posix
+
 -- Intern
 import Blog (BlogEntry)
 import Blog.Definition
-import Auxiliary (peel, peel_, getMeta, isSub, isAuthor, isCategory)
+import Auxiliary (peel, peel_, getMeta, isSub, isAuthor, isCategory, isDate)
 import Config (dBase, dBaseName, dBaseViewLocation)
+import Filter
+import BlogState
 
 
 type PublishCouch = CouchMonad (Either String Rev)
@@ -44,6 +50,16 @@ type DeleteCouch  = CouchMonad Bool
 type KeyCouch     = CouchMonad [String]
 type CouchQuery   = (FetchCouch BlogEntry, ([BlogEntry] -> [String]))
 
+class Limitable a where
+    limitTo :: IO [BlogEntry] -> a -> IO [BlogEntry]
+
+instance Limitable MetaData where
+    limitTo = limitToMeta
+
+instance Limitable Filter where
+    limitTo = limitToFilter
+
+    
 runCouch = runCouchDBURI
 
 fetch :: FetchCouch a -> IO [a]
@@ -51,18 +67,29 @@ fetch query =
     do dBaseOutput <- runCouch dBase query
        return (map snd dBaseOutput)
 
-limitTo :: IO [BlogEntry] -> MetaData -> IO [BlogEntry]
-limitTo bs (From author) =
+getAllEntrys  v     = lift $ fetch v
+getSomeEntrys v p f = lift $ fetch v `p` f
+
+limitToFilter :: IO [BlogEntry] -> Filter -> IO [BlogEntry]
+limitToFilter bs (ThisMonth month) =
+    do bs' <- bs
+       return $ filter f bs' 
+    where f :: BlogEntry -> Bool
+          f (Entry mds _) = d =~ ("[0-9][0-9]-"++show month++"-.*")
+            where d = (peel $ getMeta isDate mds) 
+
+limitToMeta :: IO [BlogEntry] -> MetaData -> IO [BlogEntry]
+limitToMeta bs (From author) =
     do bs' <- bs
        return $ filter f bs'
     where f :: BlogEntry -> Bool
           f (Entry mds _) = (peel $ getMeta isAuthor mds) == author
-limitTo bs (To cats) =
+limitToMeta bs (To cats) =
     do bs' <- bs
        return $ filter f bs'
     where f :: BlogEntry -> Bool
           f (Entry mds _) = foldl1 (||) $ map (flip elem $ (peel_ $ getMeta isCategory mds)) cats
-limitTo bs (Subject sub) =
+limitToMeta bs (Subject sub) =
     do bs' <- bs
        return $ filter f bs'
     where f :: BlogEntry -> Bool

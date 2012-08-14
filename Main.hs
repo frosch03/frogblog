@@ -18,10 +18,11 @@ import System.Locale (defaultTimeLocale)
 -- Intern
 import Blog
 import Blog.Definition
-import Blog.Text (shorten)
+import Page 
+import Filter
+import BlogState
 import Couch ( fetch, limitTo
              , byDateTimeR, bySubject)
-import Page -- (simplePosts, posts)
 
 main :: IO ()
 main = do d <- current 
@@ -33,14 +34,13 @@ cgiMain d
          date   <- return d
          renderPageByState (BS date filter)
 
---
-
 getFilter :: CGI Filter
 getFilter
     = try "page"      (return . ThisPage . read)
     $ try "subject"   (return . ThisSubject)
     $ try "author"    (return . ThisAuthor)
     $ try "category"  (return . ThisCategory)
+    $ try "month"     (return . ThisMonth . read)
     $ (return LatestByDate)
     
 
@@ -53,28 +53,12 @@ current
          return $ D ((read year), (read mon), (read day))
 
 
-getAllEntrys  v     = lift $ fetch v
-getSomeEntrys v p f = lift $ fetch v `p` f
 
-genAbstract e = return $ map (shorten 5) e
-
-renderPagedPosting state v page
-    = do entrys    <- getAllEntrys v
-         abstracts <- genAbstract entrys
-         output $ renderHtml (posts state page abstracts) 
-
-renderSingelPost state v p f 
-    = do entrys  <- getSomeEntrys v p f
-         output $ renderHtml (simplePosts state entrys)
-
-renderSimpleAbstracts state v p f
-    = do entrys    <- getSomeEntrys v p f 
-         abstracts <- genAbstract entrys
-         output $ renderHtml (simplePosts state abstracts)
 
 
 
 renderPageByState :: BlogState -> CGI CGIResult
+
 renderPageByState state@(BS date (ThisPage cnt))
     = renderPagedPosting state byDateTimeR cnt
 
@@ -89,6 +73,9 @@ renderPageByState state@(BS date (ThisCategory cat))
 
 renderPageByState state@(BS date LatestByDate)
     = renderPagedPosting state byDateTimeR 0
+
+renderPageByState state@(BS date (ThisMonth month))
+    = renderSimpleAbstracts state byDateTimeR limitTo (ThisMonth month)
 
 try :: String -> (String -> CGI Filter) -> CGI Filter -> CGI Filter
 try s f def = do tmp <- getInput s

@@ -1,57 +1,38 @@
 module Page
---  ( simplePosts 
---  , posts
---  )
 where
 
 -- Extern 
 import Text.XHtml.Strict hiding (sub)
+import Network.CGI (output)
 
 -- Intern
 import Blog
-import Auxiliary (getMeta, isFrom, isSub, isTo, isDate)
+import Auxiliary (getMeta, isFrom, isSub, isTo, isDate, genAbstract)
 import HtmlSnippets
 import Config
+import Couch (getAllEntrys, getSomeEntrys)
+import Filter
+import BlogState
 
 type Counts = (Int, Int)
 
---
 type Navigation = Html
 
-type Day   = Int
-type Month = Int
-type Year  = Int
 
-newtype Date = D (Year, Month, Day)
+renderPagedPosting state v page
+    = do entrys    <- getAllEntrys v
+         abstracts <- genAbstract entrys
+         output $ renderHtml (posts state page abstracts) 
 
-data Filter 
-    = LatestByDate
-    | ThisMonth
-    | LastMonth
-    | ThisYearByMonth
-    | BySubject
+renderSingelPost state v p f 
+    = do entrys  <- getSomeEntrys v p f
+         output $ renderHtml (simplePosts state entrys)
 
-    | ThisSubject  String
-    | ThisPage     Int
-    | ThisAuthor   String
-    | ThisCategory String
+renderSimpleAbstracts state v p f
+    = do entrys    <- getSomeEntrys v p f 
+         abstracts <- genAbstract entrys
+         output $ renderHtml (simplePosts state abstracts)
 
-data BlogState = BS Date Filter
-
-dynNav :: Date -> Html
-dynNav (D (year, month, day))
-    =          stringToHtml "  Blog Navigation"
-    +++ br +++ stringToHtml "-------------------"
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month))) (stringToHtml "this month"))
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "last month"
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
-    +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
-
---renderPage :: PageState -> Html
---renderPage (PS date filter)
---    = 
---
 
 simplePosts :: BlogState -> [BlogEntry] -> Html
 simplePosts (BS date _) = simpleSite date renderPostings
@@ -64,17 +45,9 @@ posts (BS date _) pageNum bs = site date counts renderPostings bs'
           counts  = (pageNum, pageMax)
 
 
-staticNav :: Html
-staticNav = primHtml pageNav
+site :: Date -> Counts -> (a -> Html) -> a -> Html
+site date cs f = simpleSite date $ pnNavi cs f
 
-navigation :: Date -> Html
-navigation d
-    = thediv ! [theclass "left"] $
-    (   pre ! [theclass "navi"] $ 
-            staticNav
-        +++ br
-        +++ dynNav d
-    )
 
 simpleSite :: Date -> (a -> Html) -> a -> Html
 simpleSite date f x =   htmlHead
@@ -89,10 +62,6 @@ simpleSite date f x =   htmlHead
              +++ primHtml pageFoot
              )
 
-site :: Date -> Counts -> (a -> Html) -> a -> Html
-site date cs f = simpleSite date $ pnNavi cs f
-
-
 renderPostings :: [BlogEntry] -> Html
 renderPostings []     = noHtml
 renderPostings (b:bs) =   b
@@ -104,6 +73,31 @@ htmlHead =  header
          << (   thetitle << (stringToHtml pageTitle)
             +++ styleSheet
             )
+
+
+
+dynNav :: Date -> Html
+dynNav (D (year, month, day))
+    =          stringToHtml "  Blog Navigation"
+    +++ br +++ stringToHtml "-------------------"
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "filter") ++ ('=': (show month))) (stringToHtml "this month"))
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "last month"
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
+    +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
+
+
+staticNav :: Html
+staticNav = primHtml pageNav
+
+navigation :: Date -> Html
+navigation d
+    = thediv ! [theclass "left"] $
+    (   pre ! [theclass "navi"] $ 
+            staticNav
+        +++ br
+        +++ dynNav d
+    )
 
 pnNavi :: Counts -> (a -> Html) -> a -> Html
 pnNavi cs f x = pnWrap cs +++ f x +++ pnWrap cs
