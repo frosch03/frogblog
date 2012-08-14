@@ -75,7 +75,7 @@ limitToFilter bs (ThisMonth month) =
     do bs' <- bs
        return $ filter f bs' 
     where f :: BlogEntry -> Bool
-          f (Entry mds _) = d =~ ("[0-9][0-9]-"++show month++"-.*")
+          f (Entry mds _) = d =~ ("[0-9][0-9]-"++month++"-.*")
             where d = (peel $ getMeta isDate mds) 
 
 limitToMeta :: IO [BlogEntry] -> MetaData -> IO [BlogEntry]

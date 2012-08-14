@@ -40,7 +40,7 @@ getFilter
     $ try "subject"   (return . ThisSubject)
     $ try "author"    (return . ThisAuthor)
     $ try "category"  (return . ThisCategory)
-    $ try "month"     (return . ThisMonth . read)
+    $ try "month"     (return . ThisMonth)
     $ (return LatestByDate)
     
 
