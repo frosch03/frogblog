@@ -50,17 +50,26 @@ site date cs f = simpleSite date $ pnNavi cs f
 
 
 simpleSite :: Date -> (a -> Html) -> a -> Html
-simpleSite date f x =   htmlHead
-         +++ body
-         <<  (   primHtml pageHead
-             +++ navigation date
-             +++ (   thediv ! [theclass "box"]
-                     $ thediv ! [theclass "blogblock"]
-                       $ f x
-                 )
-             -- +++ primHtml iFrameInstagram
-             +++ primHtml pageFoot
-             )
+simpleSite date f x 
+    =   htmlHead
+    +++ body
+    <<  
+    (   (primHtml pageHead)
+    +++ navigation date
+    +++ (thediv ! [theclass "content"] $
+            (   (thediv ! [theclass "rightContainer"] $ 
+                     (primHtml pageW3C)
+                )
+            +++ (thediv ! [theclass "center"] $ 
+                     thediv ! [theclass "blogblock"] $ 
+                         f x
+                )
+            )
+        )
+    )
+
+
+
 
 renderPostings :: [BlogEntry] -> Html
 renderPostings []     = noHtml
@@ -96,12 +105,13 @@ staticNav = primHtml pageNav
 
 navigation :: Date -> Html
 navigation d
-    = thediv ! [theclass "left"] $
-    (   pre ! [theclass "navi"] $ 
-            staticNav
-        +++ br
-        +++ dynNav d
-    )
+    = thediv ! [identifier "leftContainer"] $
+        thediv ! [identifier "left"] $
+        (   pre ! [theclass "navi"] $ 
+                staticNav
+            +++ br
+            +++ dynNav d
+        )
 
 pnNavi :: Counts -> (a -> Html) -> a -> Html
 pnNavi cs f x = pnWrap cs +++ f x +++ pnWrap cs

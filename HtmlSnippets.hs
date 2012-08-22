@@ -1,7 +1,7 @@
 module HtmlSnippets 
     ( pageHead
     , pageNav
-    , pageFoot
+    , pageW3C
     , akvsHead
     , akvsBody
     )
@@ -9,10 +9,10 @@ where
 
 pageHead :: String
 pageHead = concat $ 
-      "    <div class=\"top\">\n"
+      "<div class=\"top\">\n"
     : "    <a name=\"top\"></a>\n"
     : "    <img src=\"../img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
-    : "    </div>\n"
+    : "</div>\n"
     : [[]]
 
 
@@ -25,8 +25,8 @@ pageNav = concat $
     : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
     : [[]]
 
-pageFoot :: String
-pageFoot = concat $ 
+pageW3C :: String
+pageW3C = concat $ 
       "      <a href=\"http://validator.w3.org/check/referer\">\n"
     : "       <img style=\"border:0;width:88px;height:31px\"\n"
     : "            src=\"http://www.w3.org/Icons/valid-xhtml10\"\n"
