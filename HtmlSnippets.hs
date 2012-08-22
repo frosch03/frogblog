@@ -2,6 +2,8 @@ module HtmlSnippets
     ( pageHead
     , pageNav
     , pageW3C
+    , pageStatics
+    , pageTwitter
     , akvsHead
     , akvsBody
     )
@@ -24,6 +26,52 @@ pageNav = concat $
     : "  2) <a href=\"http://frosch03.de/pad/\">Pads</a>\n"
     : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
     : [[]]
+
+pageStatics :: String
+pageStatics = concat $
+      "+---------------------------+\n"
+    : "|  Static Content           |\n"
+    : "+---------------------------+\n"
+    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/blogfrog.cgi?subject=Alter%20Kontent\">old frosch03.de</a>        |\n"
+    : "|  * <a href=\"http://frosch03.de/pad/LAN-Party.html\">Pad: 1024lan.de</a>        |\n"
+    : "|  * <a href=\"http://frosch03.de/pad/GrillParty.html\">Pad: GrillParty</a>        |\n"
+    : "|                           |\n"
+    : "+---------------------------+\n"
+    : [[]]
+
+pageTwitter :: String
+pageTwitter = concat $ 
+      "<script charset=\"utf-8\" src=\"http://widgets.twimg.com/j/2/widget.js\"></script>\n"
+    : "<script>\n"
+    : "new TWTR.Widget({\n"
+    : "  version: 2,\n"
+    : "  type: 'profile',\n"
+    : "  rpp: 4,\n"
+    : "  interval: 30000,\n"
+    : "  width: 200,\n"
+    : "  height: 300,\n"
+    : "  theme: {\n"
+    : "    shell: {\n"
+    : "      background: '#333333',\n"
+    : "      color: '#cccccc'\n"
+    : "    },\n"
+    : "    tweets: {\n"
+    : "      background: '#333333',\n"
+    : "      color: '#cccccc',\n"
+    : "      links: '#4aed05'\n"
+    : "    }\n"
+    : "  },\n"
+    : "  features: {\n"
+    : "    scrollbar: false,\n"
+    : "    loop: false,\n"
+    : "    live: false,\n"
+    : "    behavior: 'all'\n"
+    : "  }\n"
+    : "}).render().setUser('frosch03').start();\n"
+    : "</script>\n"
+    : [[]]
+
 
 pageW3C :: String
 pageW3C = concat $ 

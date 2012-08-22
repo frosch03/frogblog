@@ -58,7 +58,11 @@ simpleSite date f x
     +++ navigation date
     +++ (thediv ! [identifier "content"] $
             (   (thediv ! [identifier "rightContainer"] $ 
-                     (primHtml pageW3C)
+                    (    (pre ! [theclass "statics"] $ 
+                            (primHtml pageStatics)
+                         )
+                     +++ (primHtml pageTwitter)
+                    )
                 )
             +++ (thediv ! [theclass "center"] $ 
                      thediv ! [theclass "blogblock"] $ 
