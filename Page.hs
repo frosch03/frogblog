@@ -56,8 +56,8 @@ simpleSite date f x
     <<  
     (   (primHtml pageHead)
     +++ navigation date
-    +++ (thediv ! [theclass "content"] $
-            (   (thediv ! [theclass "rightContainer"] $ 
+    +++ (thediv ! [identifier "content"] $
+            (   (thediv ! [identifier "rightContainer"] $ 
                      (primHtml pageW3C)
                 )
             +++ (thediv ! [theclass "center"] $ 
