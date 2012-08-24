@@ -54,7 +54,7 @@ simpleSite date f x
     =   htmlHead
     +++ body
     <<  
-    (   (primHtml pageHead)
+    (   (thediv ! [identifier "topContainer"] $ (primHtml pageHead))
     +++ navigation date
     +++ (thediv ! [identifier "content"] $
             (   (thediv ! [identifier "rightContainer"] $ 

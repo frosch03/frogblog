@@ -12,8 +12,9 @@ where
 pageHead :: String
 pageHead = concat $ 
       "<div class=\"top\">\n"
-    : "    <a name=\"top\"></a>\n"
+    : "    <a href=\"http://frosch03.de/blog\">\n"
     : "    <img src=\"../img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
+    : "    </a>\n"
     : "</div>\n"
     : [[]]
 
@@ -34,8 +35,11 @@ pageStatics = concat $
     : "+---------------------------+\n"
     : "|                           |\n"
     : "|  * <a href=\"http://frosch03.de/blogfrog.cgi?subject=Alter%20Kontent\">old frosch03.de</a>        |\n"
+    : "|                           |\n"
     : "|  * <a href=\"http://frosch03.de/pad/LAN-Party.html\">Pad: 1024lan.de</a>        |\n"
     : "|  * <a href=\"http://frosch03.de/pad/GrillParty.html\">Pad: GrillParty</a>        |\n"
+    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/linklist\">Groupchat Links</a>        |\n"
     : "|                           |\n"
     : "+---------------------------+\n"
     : [[]]
@@ -59,7 +63,7 @@ pageTwitter = concat $
     : "    tweets: {\n"
     : "      background: '#333333',\n"
     : "      color: '#cccccc',\n"
-    : "      links: '#4aed05'\n"
+    : "      links: '#808080'\n"
     : "    }\n"
     : "  },\n"
     : "  features: {\n"
