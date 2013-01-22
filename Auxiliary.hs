@@ -6,21 +6,22 @@ module Auxiliary
     , fromOK
     , firstUp
 
-    -- , genAbstract
-    -- , shorten
+    , genAbstract
+    , shorten
     )
 where
 
 -- Extern 
 import Data.Char (toLower, toUpper)
 import Text.JSON (Result(..))
+import Text.Pandoc
 
 -- Intern
 import Blog.Definition
 import Blog.Text
 import Blog.Auxiliary
 
---genAbstract e = return $ map (shorten 5) e
+genAbstract e = return $ map (shorten 5) e
 
 peel :: MetaData -> String
 peel (Subject s) = s 
@@ -63,6 +64,24 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
     where x_low   = (map toLower x)
           x_first = toUpper $ head x_low
 
+shorten :: Int -> BlogEntry -> BlogEntry
+shorten i (Entry md p) 
+  = (Entry md (readMarkdown def $ unlines shrt))
+    where pl = bottomUp behead $ (bottomUp delink) p
+          shrt = take i $ lines $ writePlain def pl
+          
+          
+
+behead :: Block -> Block
+behead (Header n _ xs)        = Para xs
+behead x = x    
+
+delink :: [Inline] -> [Inline]
+delink ((Text.Pandoc.Link txt _) : xs) = txt ++ delink xs
+delink (x : xs)            = x : delink xs
+delink []                  = []
+
+-- main = interact (writeDoc . processWith delink . readDoc)
 
 -- shorten :: Int -> BlogEntry -> BlogEntry
 -- shorten n (Entry md post) = Short md (fromLines appendix short)
