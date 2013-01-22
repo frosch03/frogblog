@@ -1,7 +1,9 @@
 module HtmlSnippets 
     ( pageHead
     , pageNav
-    , pageFoot
+    , pageW3C
+    , pageStatics
+    , pageTwitter
     , akvsHead
     , akvsBody
     )
@@ -9,10 +11,11 @@ where
 
 pageHead :: String
 pageHead = concat $ 
-      "    <div class=\"top\">\n"
-    : "    <a name=\"top\"></a>\n"
+      "<div class=\"top\">\n"
+    : "    <a href=\"http://frosch03.de/blog\">\n"
     : "    <img src=\"../img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
-    : "    </div>\n"
+    : "    </a>\n"
+    : "</div>\n"
     : [[]]
 
 
@@ -25,8 +28,57 @@ pageNav = concat $
     : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
     : [[]]
 
-pageFoot :: String
-pageFoot = concat $ 
+pageStatics :: String
+pageStatics = concat $
+      "+---------------------------+\n"
+    : "|  Static Content           |\n"
+    : "+---------------------------+\n"
+    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/blogfrog.cgi?subject=Alter%20Kontent\">old frosch03.de</a>        |\n"
+    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/pad/LAN-Party.html\">Pad: 1024lan.de</a>        |\n"
+    : "|  * <a href=\"http://frosch03.de/pad/GrillParty.html\">Pad: GrillParty</a>        |\n"
+    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/linklist\">Groupchat Links</a>        |\n"
+    : "|                           |\n"
+    : "+---------------------------+\n"
+    : [[]]
+
+pageTwitter :: String
+pageTwitter = concat $ 
+      "<script charset=\"utf-8\" src=\"http://widgets.twimg.com/j/2/widget.js\"></script>\n"
+    : "<script>\n"
+    : "new TWTR.Widget({\n"
+    : "  version: 2,\n"
+    : "  type: 'profile',\n"
+    : "  rpp: 4,\n"
+    : "  interval: 30000,\n"
+    : "  width: 200,\n"
+    : "  height: 300,\n"
+    : "  theme: {\n"
+    : "    shell: {\n"
+    : "      background: '#333333',\n"
+    : "      color: '#cccccc'\n"
+    : "    },\n"
+    : "    tweets: {\n"
+    : "      background: '#333333',\n"
+    : "      color: '#cccccc',\n"
+    : "      links: '#808080'\n"
+    : "    }\n"
+    : "  },\n"
+    : "  features: {\n"
+    : "    scrollbar: false,\n"
+    : "    loop: false,\n"
+    : "    live: false,\n"
+    : "    behavior: 'all'\n"
+    : "  }\n"
+    : "}).render().setUser('frosch03').start();\n"
+    : "</script>\n"
+    : [[]]
+
+
+pageW3C :: String
+pageW3C = concat $ 
       "      <a href=\"http://validator.w3.org/check/referer\">\n"
     : "       <img style=\"border:0;width:88px;height:31px\"\n"
     : "            src=\"http://www.w3.org/Icons/valid-xhtml10\"\n"
