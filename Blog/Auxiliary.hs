@@ -1,7 +1,7 @@
 module Blog.Auxiliary 
     ( linkify
     , dropOK
-    , textLink
+    -- , textLink
     )
 where
 
@@ -20,13 +20,13 @@ linkify :: (Parameter, Value, Html) -> Html
 linkify ([],  val, htmltext) = toHtml $ hotlink blogURL htmltext
 linkify (par, val, htmltext) = toHtml $ hotlink (blogURL ++ ('?': par) ++ ('=' : val)) htmltext
 
-textLink :: (Parameter, Value, String) -> BlogText
-textLink ([],  _,   _   ) = Empty
-textLink (par, val, text) = PureC 
-                             (Link 
-                               (blogURL ++ ('?': par) ++ ('=': val))
-                               (PureT text)
-                             )   
+-- textLink :: (Parameter, Value, String) -> BlogText
+-- textLink ([],  _,   _   ) = Empty
+-- textLink (par, val, text) = PureC 
+--                              (Link 
+--                                (blogURL ++ ('?': par) ++ ('=': val))
+--                                (PureT text)
+--                              )   
 
 dropOK :: Result a -> a
 dropOK (Ok x)    = x 

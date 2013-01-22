@@ -8,6 +8,7 @@ module Blog.Definition
     )
 where
 
+import Text.Pandoc
 
 type URL        = String
 type Text       = String
@@ -15,8 +16,8 @@ type Category   = String
 type Author     = String
 
 data BlogEntry
-    = Entry [MetaData] BlogText
-    | Short [MetaData] BlogText
+    = Entry [MetaData] Pandoc
+    -- | Short [MetaData] BlogText
     deriving (Show)
 
 data MetaData

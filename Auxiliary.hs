@@ -6,8 +6,8 @@ module Auxiliary
     , fromOK
     , firstUp
 
-    , genAbstract
-    , shorten
+    -- , genAbstract
+    -- , shorten
     )
 where
 
@@ -20,7 +20,7 @@ import Blog.Definition
 import Blog.Text
 import Blog.Auxiliary
 
-genAbstract e = return $ map (shorten 5) e
+--genAbstract e = return $ map (shorten 5) e
 
 peel :: MetaData -> String
 peel (Subject s) = s 
@@ -64,9 +64,9 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
           x_first = toUpper $ head x_low
 
 
-shorten :: Int -> BlogEntry -> BlogEntry
-shorten n (Entry md post) = Short md (fromLines appendix short)
-    where lns      = lines $ toText post
-          short    = take n lns 
-          sub      = peel $ getMeta isSub md
-          appendix = (textLink ("subject", sub, " (more)... "))
+-- shorten :: Int -> BlogEntry -> BlogEntry
+-- shorten n (Entry md post) = Short md (fromLines appendix short)
+--     where lns      = lines $ toText post
+--           short    = take n lns 
+--           sub      = peel $ getMeta isSub md
+--           appendix = (textLink ("subject", sub, " (more)... "))
