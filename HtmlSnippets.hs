@@ -36,10 +36,9 @@ pageStatics = concat $
     : "|                           |\n"
     : "|  * <a href=\"http://frosch03.de/blogfrog.cgi?subject=Alter%20Kontent\">old frosch03.de</a>        |\n"
     : "|                           |\n"
-    : "|  * <a href=\"http://frosch03.de/pad/LAN-Party.html\">Pad: 1024lan.de</a>        |\n"
     : "|  * <a href=\"http://frosch03.de/pad/GrillParty.html\">Pad: GrillParty</a>        |\n"
     : "|                           |\n"
-    : "|  * <a href=\"http://frosch03.de/linklist\">Groupchat Links</a>        |\n"
+    : "|  * <a href=\"http://frosch03.de/linklist/groupchat.html\">Groupchat Links</a>        |\n"
     : "|                           |\n"
     : "+---------------------------+\n"
     : [[]]
