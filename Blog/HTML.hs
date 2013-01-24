@@ -31,7 +31,7 @@ entryToHtml heading meta entry
     where date = getMeta isDate meta
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
-          pandoc_html = toHtml $ BStr.renderHtml (P.writeHtml P.def entry)
+          pandoc_html = primHtml $ BStr.renderHtml (P.writeHtml P.def entry)
 
 
 instance HTML (MetaData) where
