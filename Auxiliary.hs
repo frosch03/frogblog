@@ -65,12 +65,10 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
           x_first = toUpper $ head x_low
 
 shorten :: Int -> BlogEntry -> BlogEntry
-shorten i (Entry md (Pandoc pmd bs)) 
+shorten i (Entry md p) 
   = (Entry md (readMarkdown def $ unlines shrt))
-    where pl = bottomUp behead $ (bottomUp delink) (Pandoc pmd bs)
+    where pl = bottomUp behead $ (bottomUp delink) p
           shrt = take i $ lines $ writePlain def pl
-          bs'  = bs ++ [Plain [(Link [Str "(more)"] (("http://frosch03.de/blogfrog.cgi?subject=" ++ subj), ""))]]
-          subj = head $ map (\(Subject x) -> x) md
           
           
 
