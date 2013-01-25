@@ -69,7 +69,8 @@ shorten i (Entry md (Pandoc pmd bs))
   = (Entry md (readMarkdown def $ unlines shrt))
     where pl = bottomUp behead $ (bottomUp delink) (Pandoc pmd bs)
           shrt = take i $ lines $ writePlain def pl
-          bs'  = bs ++ [Plain [(Link [Str "(more)"] (("http://frosch03.de/blogfrog.cgi?subject="     ), ""))]]
+          bs'  = bs ++ [Plain [(Link [Str "(more)"] (("http://frosch03.de/blogfrog.cgi?subject=" ++ subj), ""))]]
+          subj = head $ map (\(Subject x) -> x) md
           
           
 
