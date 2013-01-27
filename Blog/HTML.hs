@@ -25,7 +25,7 @@ entryToHtml heading meta entry
     = thediv ! [theclass "entry"] 
     $     (heading +++ toHtml date +++ br)
       +++ pandoc_html +++ br
-      +++ linkify ("subject", subj, stringToHtml "(more)")
+--      +++ linkify ("subject", subj, stringToHtml "(more)")
       +++ hr
       +++ (stringToHtml "From: " +++ toHtml from +++ br) 
       +++ (stringToHtml "To: " +++ toHtml to +++ br) 
