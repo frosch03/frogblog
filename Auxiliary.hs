@@ -75,8 +75,8 @@ shorten i (Entry md p)
           p_bs_firsts = tail $ reverse p_bs          
           p_bs''      = reverse $ (appendLink "blub" p_bs_last) : (p_bs_firsts)
           
-appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(mo")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
-appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(mo")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
+appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
+appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
 
 
           
