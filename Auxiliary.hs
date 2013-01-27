@@ -66,12 +66,20 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
 
 shorten :: Int -> BlogEntry -> BlogEntry
 shorten i (Entry md p) 
-  = (Entry md (readMarkdown def $ unlines shrt))
-    where pl = bottomUp behead $ (bottomUp delink) p
+  = (Entry md (Pandoc p_md p_bs''))
+    where pl   = bottomUp behead $ (bottomUp delink) p
           shrt = take i $ lines $ writePlain def pl
+          p'   = (readMarkdown def $ unlines shrt)
+          (Pandoc p_md p_bs) = p'
+          p_bs_last   = head $ reverse p_bs
+          p_bs_firsts = tail $ reverse p_bs          
+          p_bs''      = reverse $ (appendLink "blub" p_bs_last) : (p_bs_firsts)
           
-          
+appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(mo")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
+appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(mo")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
 
+
+          
 behead :: Block -> Block
 behead (Header n _ xs)        = Para xs
 behead x = x
