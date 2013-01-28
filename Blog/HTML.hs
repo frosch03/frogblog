@@ -13,6 +13,7 @@ import Blog.Definition
 import Blog.Auxiliary (linkify) --, textLink)
 import Auxiliary (peel, getMeta, isSub, isDate, isFrom, isTo)
 import Config
+import HtmlSnippets (disqusBodyCode)
 
 instance HTML (BlogEntry) where
     toHtml (Entry meta entry) = entryToHtml (toHtml $ getMeta isSub meta)  meta entry
@@ -28,7 +29,8 @@ entryToHtml heading meta entry
       +++ linkify ("subject", subj, stringToHtml "(more)")
       +++ hr
       +++ (stringToHtml "From: " +++ toHtml from +++ br) 
-      +++ (stringToHtml "To: " +++ toHtml to +++ br) 
+      +++ (stringToHtml "To: " +++ toHtml to +++ br)
+      +++ (primHtml disqusBodyCode)
     where date = getMeta isDate meta
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
