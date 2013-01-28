@@ -6,8 +6,6 @@ module HtmlSnippets
     , pageTwitter
     , akvsHead
     , akvsBody
-    , disqusBodyCode
-    , disqusHeaderCode
     )
 where
 
@@ -164,41 +162,3 @@ akvsBody = concat $
     : "<!-- AKVS body end -->\n"
     : [[]]
 
-
-
-disqusBodyCode :: String
-disqusBodyCode
-  = concat $
-      "<div id=\"disqus_thread\"></div>\n"
-    : "<script type=\"text/javascript\">\n"
-    : "/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n"
-    : "var disqus_shortname = ''; // required: replace example with your forum shortname\n"
-    : "\n"
-    : "/* * * DON'T EDIT BELOW THIS LINE * * */\n"
-    : "(function() {\n"
-    : "    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;\n"
-    : "    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';\n"
-    : "    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);\n"
-    : "})();\n"
-    : "</script>\n"
-    : "<noscript>Please enable JavaScript to view the <a href=\"http://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n"
-    : "<a href=\"http://disqus.com\" class=\"dsq-brlink\">comments powered by <span class=\"logo-disqus\">Disqus</span></a>\n"
-    : [[]]
-
-
-disqusHeaderCode :: String
-disqusHeaderCode
-  = concat $
-      "<script type=\"text/javascript\">\n"
-    : "/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n"
-    : "var disqus_shortname = ''; // required: replace example with your forum shortname\n"
-    : "\n"
-    : "/* * * DON'T EDIT BELOW THIS LINE * * */\n"
-    : "(function () {\n"
-    : "    var s = document.createElement('script'); s.async = true;\n"
-    : "    s.type = 'text/javascript';\n"
-    : "    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';\n"
-    : "    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);\n"
-    : "}());\n"
-    : "</script>    \n"
-    : [[]]

@@ -85,7 +85,6 @@ htmlHead :: Html
 htmlHead =  header
          << (   thetitle << (stringToHtml pageTitle)
             +++ styleSheet
-	    +++ (primHtml disqusHeaderCode)
             )
 
 
