@@ -65,19 +65,20 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
           x_first = toUpper $ head x_low
 
 shorten :: Int -> BlogEntry -> BlogEntry
-shorten i (Entry md p) 
-  = (Entry md (Pandoc p_md p_bs''))
-    where pl   = bottomUp behead $ (bottomUp delink) p
-          shrt = take i $ lines $ writePlain def pl
-          p'   = (readMarkdown def $ unlines shrt)
-          (Pandoc p_md p_bs) = p'
-          p_bs_last   = head $ reverse p_bs
-          p_bs_firsts = tail $ reverse p_bs          
-          p_bs''      = reverse $ (appendLink "blub" p_bs_last) : (p_bs_firsts)
+shorten i (Entry be_md p) 
+  = (Entry be_md (Pandoc p_md p_bs''))
+  where (Pandoc p_md p_bs) = p''
+        (Subject subj)     = getMeta isSub be_md
+        p'          = bottomUp behead $ (bottomUp delink) p
+        p''         = (readMarkdown def $ unlines shrt)
+        shrt        = take i $ lines $ writePlain def p'
+        p_bs_last   = head $ reverse p_bs
+        p_bs_firsts = tail $ reverse p_bs          
+        p_bs''      = reverse $ (appendLink subj p_bs_last) : (p_bs_firsts)
+
           
 appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
 appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
-
 
           
 behead :: Block -> Block
