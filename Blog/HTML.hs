@@ -13,25 +13,30 @@ import Blog.Definition
 import Blog.Auxiliary (linkify) --, textLink)
 import Auxiliary (peel, getMeta, isSub, isDate, isFrom, isTo)
 import Config
+import HtmlSnippets (livefyreSnip)
 
 instance HTML (BlogEntry) where
     toHtml (Entry meta entry) = entryToHtml (toHtml $ getMeta isSub meta)  meta entry
-    -- toHtml (Short meta entry) = entryToHtml (linkify ("subject", peel sub, toHtml sub)) meta entry
-    --                           where sub  = getMeta isSub  meta
 
--- entryToHtml :: Html -> [MetaData] -> BlogText -> Html
+
 entryToHtml :: Html -> [MetaData] -> Pandoc -> Html
 entryToHtml heading meta entry
     = thediv ! [theclass "entry"] 
-    $     (heading +++ toHtml date +++ br)
+    $     (if (isLong entry) then (heading) else (linkify ("blog", subj, heading)))
+      +++ toHtml date +++ br
       +++ pandoc_html +++ br
       +++ hr
       +++ (stringToHtml "From: " +++ toHtml from +++ br) 
-      +++ (stringToHtml "To: " +++ toHtml to +++ br) 
+      +++ (stringToHtml "To: "   +++ toHtml to   +++ br)
+      +++ if (isLong entry) then (hr +++ comments) else (br)
     where date = getMeta isDate meta
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
-          pandoc_html = primHtml $ BStr.renderHtml (P.writeHtml P.def entry)
+          (Subject subj) = getMeta isSub  meta
+          pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml P.def entry)
+          comments       = primHtml $ livefyreSnip
+          isLong         = (\(Pandoc _ x) -> (> 5) $ length x)
+
 
 
 
@@ -44,26 +49,4 @@ instance HTML (MetaData) where
         where fun :: Html -> String -> Html
               fun done []   = done
               fun done next = done +++ (stringToHtml ", " +++ linkify ("category", next, stringToHtml next))
-
--- instance HTML (BlogText) where
---     toHtml (Empty)          = noHtml
---     toHtml (PureT txt)      = stringToHtml txt
---     toHtml (PureC cmd)      = toHtml cmd
---     toHtml (MixT  txt rest) = (stringToHtml txt) +++ (toHtml rest)
---     toHtml (MixC  cmd rest) = (toHtml       cmd) +++ (toHtml rest)
-
--- instance HTML (Command) where
---     toHtml (None)                 = noHtml
---     toHtml (Break)                = primHtml " "
---     toHtml (Block        body)     = p          << (toHtml body)
---     toHtml (Bold         body)     = bold       << (toHtml body)
---     toHtml (Italic       body)     = italics    << (toHtml body)
---     toHtml (Underline    body)     = thespan  ! [theclass "uline"]  $ (toHtml body)
---     toHtml (Strike       body)     = thespan  ! [theclass "strike"] $ (toHtml body)
---     toHtml (Section      body)     = h2         << (toHtml body)
---     toHtml (Link         url body) = toHtml   $ hotlink url (toHtml body)
---     toHtml (CommandBlock bodys)    = thediv   ! [theclass "commandblock"] << (map (\s -> (toHtml s) +++ br) bodys)
---     toHtml (Code         src)      = thediv   ! [theclass "code"]
---                                   $ primHtml $ hscolour codeColor False src
---     toHtml (Itemize      bodys)    = ulist      << map (li.toHtml) bodys
 

@@ -77,8 +77,9 @@ shorten i (Entry be_md p)
         p_bs''      = reverse $ (appendLink subj p_bs_last) : (p_bs_firsts)
 
           
-appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
-appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blogfrog.cgi?subject=" ++ subj, subj))])
+appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))])
+appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))])
+appendLink subj _          = Plain [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))]
 
           
 behead :: Block -> Block

@@ -6,6 +6,7 @@ module HtmlSnippets
     , pageTwitter
     , akvsHead
     , akvsBody
+    , livefyreSnip
     )
 where
 
@@ -162,3 +163,28 @@ akvsBody = concat $
     : "<!-- AKVS body end -->\n"
     : [[]]
 
+
+livefyreSnip :: String
+livefyreSnip = concat $
+      "<!-- START: Livefyre Embed -->\n"
+    : "<div id=\"livefyre-comments\"></div>\n"
+    : "<script type=\"text/javascript\" src=\"http://zor.livefyre.com/wjs/v3.0/javascripts/livefyre.js\"></script>\n"
+    : "<script type=\"text/javascript\">\n"
+    : "(function () {\n"
+    -- : "var articleId = fyre.conv.load.makeArticleId(null, ['subject']);\n"
+    : "var articleId = fyre.conv.load.makeArticleId(null);\n"
+    : "fyre.conv.load({}, [{\n"
+    : "el: 'livefyre-comments',\n"
+    : "network: \"livefyre.com\",\n"
+    : "siteId: \"322764\",\n"
+    : "articleId: articleId,\n"
+    : "signed: false,\n"
+    : "collectionMeta: {\n"
+    : "articleId: articleId,\n"
+    : "url: fyre.conv.load.makeCollectionUrl(),\n"
+    : "}\n"
+    : "}], function() {});\n"
+    : "}());\n"
+    : "</script>\n"
+    : "<!-- END: Livefyre Embed -->\n"
+    : [[]]

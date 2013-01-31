@@ -17,8 +17,8 @@ type Parameter = String
 type Value     = String
 
 linkify :: (Parameter, Value, Html) -> Html
-linkify ([],  val, htmltext) = toHtml $ hotlink blogURL htmltext
-linkify (par, val, htmltext) = toHtml $ hotlink (blogURL ++ ('?': par) ++ ('=' : val)) htmltext
+linkify ([],  val, htmltext) = toHtml $ hotlink blogPath htmltext
+linkify (par, val, htmltext) = toHtml $ hotlink (blogPath ++ ('/': par) ++ ('/' : val)) htmltext
 
 -- textLink :: (Parameter, Value, String) -> BlogText
 -- textLink ([],  _,   _   ) = Empty
