@@ -27,9 +27,9 @@ styleSheet = thelink ! [rel "stylesheet", href "/log.css", thetype "text/css"] $
 
 
 -- The domain of your blog
-blogPath = "http://yoururl.com/"
+blogPath = "http://yoururl.com"
 blogName = "blogfrog.cgi"
-blogURL  = blogPath ++ blogName
+blogURL  = blogPath ++ ('/':blogName)
 
 pageStep :: Int
 pageStep = 5 
