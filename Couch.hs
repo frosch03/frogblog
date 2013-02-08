@@ -96,7 +96,8 @@ limitToMeta bs (Subject sub) =
           f (Entry mds _) = (peel $ getMeta isSub mds) == sub
 
 byDateTimeR :: FetchCouch BlogEntry
-byDateTimeR = query "allPosts" True
+-- byDateTimeR = query "allPosts" True
+byDateTimeR = query "allByDate" True
 
 bySubject :: FetchCouch BlogEntry
 bySubject = query "bySubject" False
