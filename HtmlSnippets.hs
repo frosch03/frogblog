@@ -7,6 +7,7 @@ module HtmlSnippets
     , akvsHead
     , akvsBody
     , livefyreSnip
+    , latexMathML
     )
 where
 
@@ -89,6 +90,12 @@ pageW3C = concat $
     : "            src=\"http://jigsaw.w3.org/css-validator/images/vcss\" \n"
     : "            alt=\"Valid CSS!\" /></a>\n"
     : "\n"
+    : [[]]
+
+latexMathML :: String
+latexMathML = concat $
+      "<script type=\"text/javascript\" src=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js\"></script>"
+    : "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css\" />"
     : [[]]
 
 akvsHead :: String
