@@ -37,7 +37,9 @@ entryToHtml heading meta entry
           pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml def' entry)
           comments       = primHtml $ livefyreSnip
           isLong         = (\(Pandoc _ x) -> (> 5) $ length x)
-          def'           = P.def { writerExtensions = insert Ext_tex_math_dollars (writerExtensions P.def) }          
+          def'           = P.def { writerExtensions     = insert Ext_tex_math_dollars (writerExtensions P.def)
+                                 , writerHTMLMathMethod = LaTeXMathML (Just "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
+                                 }          
           
 
 
