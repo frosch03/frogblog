@@ -6,6 +6,7 @@ where
 -- Extern
 import Text.ParserCombinators.Parsec
 import Text.Pandoc as P
+import Data.Set (insert)
 
 -- Intern
 import Blog.Definition
@@ -21,7 +22,8 @@ pBlogEntry =
 pMeta = 
     do many1 (choice [pMetaSub, pMetaDate, pMetaTo, pMetaFrom])
 
-pPandoc = P.readMarkdown P.def
+pPandoc = P.readMarkdown def'
+    where def' = P.def { readerExtensions = insert Ext_tex_math_dollars (readerExtensions P.def) }          
 
 
 pBlogText = manyTill anyChar eof

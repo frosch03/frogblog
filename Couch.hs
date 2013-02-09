@@ -136,6 +136,7 @@ fetchMeta (query, f) =
 
 type View = String
 type Reverse = Bool
+
 query :: (JSON a) => View -> Reverse -> FetchCouch a
 query view r =
     do dBaseView <- return (doc view)

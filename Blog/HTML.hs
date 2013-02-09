@@ -7,6 +7,7 @@ import Text.XHtml.Strict
 import Language.Haskell.HsColour.InlineCSS
 import Text.Pandoc as P
 import Text.Blaze.Html.Renderer.String as BStr
+import Data.Set (insert)
 
 -- Intern
 import Blog.Definition
@@ -33,9 +34,11 @@ entryToHtml heading meta entry
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
           (Subject subj) = getMeta isSub  meta
-          pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml P.def entry)
+          pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml def' entry)
           comments       = primHtml $ livefyreSnip
           isLong         = (\(Pandoc _ x) -> (> 5) $ length x)
+          def'           = P.def { writerExtensions = insert Ext_tex_math_dollars (writerExtensions P.def) }          
+          
 
 
 
