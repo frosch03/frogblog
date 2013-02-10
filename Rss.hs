@@ -30,8 +30,8 @@ fbChanE
     ] 
 
 genRss :: [BlogEntry] -> String
-genRss es = (showXML.rssToXML) $ froggerss fbEmptyRss es
-
+genRss es = header ++ ((showXML.rssToXML) $ froggerss fbEmptyRss es)
+  where header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 
 froggerss :: RSS -> [BlogEntry] -> RSS
 froggerss (RSS t u p c _) entrys
