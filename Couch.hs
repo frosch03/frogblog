@@ -5,6 +5,7 @@ module Couch
     , fetchMeta
     , limitTo
     , byDateTimeR
+    , byDateTime
     , bySubject
     , allCategories
     , allAuthors
@@ -98,6 +99,9 @@ limitToMeta bs (Subject sub) =
 byDateTimeR :: FetchCouch BlogEntry
 -- byDateTimeR = query "allPosts" True
 byDateTimeR = query "allByDate" True
+
+byDateTime :: FetchCouch BlogEntry
+byDateTime = query "allByDate" False
 
 bySubject :: FetchCouch BlogEntry
 bySubject = query "bySubject" False

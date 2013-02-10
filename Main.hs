@@ -23,7 +23,7 @@ import Rss
 import Filter
 import BlogState
 import Couch ( fetch, limitTo
-             , byDateTimeR, bySubject)
+             , byDateTimeR, byDateTime, bySubject)
 
 main :: IO ()
 main = do d <- current 
@@ -62,7 +62,7 @@ current
 renderPageByState :: BlogState -> CGI CGIResult
 
 renderPageByState state@(BS date GenRss)
-    = renderRss state byDateTimeR
+    = renderRss state byDateTime
 
 renderPageByState state@(BS date (ThisPage cnt))
     = renderPagedPosting state byDateTimeR cnt
