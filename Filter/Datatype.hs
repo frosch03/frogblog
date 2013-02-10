@@ -9,6 +9,7 @@ data Filter
     = LatestByDate
     | ThisYearByMonth
     | BySubject
+    | GenRss
 
     | ThisSubject  String
     | ThisPage     Int

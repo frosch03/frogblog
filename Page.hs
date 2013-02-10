@@ -13,11 +13,16 @@ import Config
 import Couch (getAllEntrys, getSomeEntrys)
 import Filter
 import BlogState
+import Rss
 
 type Counts = (Int, Int)
 
 type Navigation = Html
 
+
+renderRss state v
+    = do entrys <- getAllEntrys v
+         output $ genRss entrys
 
 renderPagedPosting state v page
     = do entrys    <- getAllEntrys v

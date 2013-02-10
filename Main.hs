@@ -18,7 +18,8 @@ import System.Locale (defaultTimeLocale)
 -- Intern
 import Blog
 import Blog.Definition
-import Page 
+import Page
+import Rss
 import Filter
 import BlogState
 import Couch ( fetch, limitTo
@@ -41,6 +42,7 @@ getFilter
     $ try "author"    (return . ThisAuthor)
     $ try "category"  (return . ThisCategory)
     $ try "month"     (return . ThisMonth)
+    $ try "rss"       (return . (const GenRss))
     $ (return LatestByDate)
     
 
@@ -58,6 +60,9 @@ current
 
 
 renderPageByState :: BlogState -> CGI CGIResult
+
+renderPageByState state@(BS date GenRss)
+    = renderRss state byDateTimeR
 
 renderPageByState state@(BS date (ThisPage cnt))
     = renderPagedPosting state byDateTimeR cnt
