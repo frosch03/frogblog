@@ -42,13 +42,15 @@ publish (filename:_) =
        
 
 list :: [String] -> IO ()
-list _ = 
-    do xs <- fetchMeta allSubjects
-       sequence_ $ map putStrLn xs
+list _
+  = do xs  <- fetchMeta allSubjects
+       sequence_ $ map (putStrLn.spc2uds) xs
+  where spc2uds cs = map (\c -> if c == ' ' then '_' else c) cs
        
 
 delete :: [String] -> IO ()
 delete (sub:_) = 
-    do deletePosting (Subject sub)
+    do sub' <- return $ map (\c -> if c == '_' then ' ' else c) sub
+       deletePosting (Subject sub')
        return ()
        
