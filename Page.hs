@@ -27,20 +27,41 @@ renderRss state v
 renderPagedPosting state v page
     = do entrys    <- getAllEntrys v
          abstracts <- genAbstract entrys
-         output $ renderHtml (posts state page abstracts) 
+         output $ renderHtml (posts state page abstracts)
 
-renderSingelPost state v p f 
+renderSingelPost state v p f
     = do entrys  <- getSomeEntrys v p f
          output $ renderHtml (simplePosts state entrys)
 
 renderSimpleAbstracts state v p f
-    = do entrys    <- getSomeEntrys v p f 
+    = do entrys    <- getSomeEntrys v p f
          abstracts <- genAbstract entrys
          output $ renderHtml (simplePosts state abstracts)
 
 
+
+mobilePagedPosting state v page
+    = do entrys    <- getAllEntrys v
+         abstracts <- genAbstract entrys
+         output $ renderHtml (postsM state page abstracts)
+
+mobileSingelPost state v p f 
+    = do entrys  <- getSomeEntrys v p f
+         output $ renderHtml (mobilePosts state entrys)
+
+mobileSimpleAbstracts state v p f
+    = do entrys    <- getSomeEntrys v p f 
+         abstracts <- genAbstract entrys
+         output $ renderHtml (mobilePosts state abstracts)
+
+
 simplePosts :: BlogState -> [BlogEntry] -> Html
 simplePosts (BS date _) = simpleSite date renderPostings
+
+
+mobilePosts :: BlogState -> [BlogEntry] -> Html
+mobilePosts (BS date _) = mobileSite date renderPostings
+
 
 posts :: BlogState -> Int -> [BlogEntry] -> Html
 posts (BS date _) pageNum bs = site date counts renderPostings bs'
@@ -49,36 +70,42 @@ posts (BS date _) pageNum bs = site date counts renderPostings bs'
           pageMax = (length bs) `div` pageStep
           counts  = (pageNum, pageMax)
 
-
 site :: Date -> Counts -> (a -> Html) -> a -> Html
 site date cs f = simpleSite date $ pnNavi cs f
 
 
-simpleSite :: Date -> (a -> Html) -> a -> Html
-simpleSite date f x 
+
+postsM :: BlogState -> Int -> [BlogEntry] -> Html
+postsM (BS date _) pageNum bs = siteM date counts renderPostings bs'
+    where bs'     = (take pageStep) . (drop skip) $ bs
+          skip    = pageStep * pageNum
+          pageMax = (length bs) `div` pageStep
+          counts  = (pageNum, pageMax)
+
+siteM :: Date -> Counts -> (a -> Html) -> a -> Html
+siteM date cs f = mobileSite date $ pnNavi cs f
+
+
+mobileSite :: Date -> (a -> Html) -> a -> Html
+mobileSite date f x
     =   htmlHead
     +++ body
-    <<  
-    (   (thediv ! [identifier "topContainer"] $ (primHtml pageHead))
-    +++ navigation date
-    +++ (thediv ! [identifier "content"] $
-            (   (thediv ! [identifier "rightContainer"] $ 
-                    (    (pre ! [theclass "statics"] $ 
-                            (primHtml pageStatics)
-                         )
-                     +++ (primHtml pageTwitter)
-                    )
-                )
-            +++ (thediv ! [theclass "center"] $ 
-                     thediv ! [theclass "blogblock"] $ 
-                         f x
-                )
-            )
+    <<
+    ( ( thediv ! [theclass "center"] $
+        ( thediv ! [theclass "blogblock"] $
+          f x
         )
+      )
+      +++
+      ( thediv ! [identifier "footer"] $
+        br
+      )
     )
 
-newSite :: Date -> (a -> Html) -> a -> Html
-newSite date f x 
+
+
+simpleSite :: Date -> (a -> Html) -> a -> Html
+simpleSite date f x 
     =   htmlHead
     +++ body
     <<

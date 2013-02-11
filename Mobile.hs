@@ -22,10 +22,8 @@ import Page
 import Rss
 import Filter
 import BlogState
-import Config hiding (blogURL, blogPath, blogName)
 import Couch ( fetch, limitTo
              , byDateTimeR, byDateTime, bySubject)
-
 
 main :: IO ()
 main = do d <- current 
@@ -63,26 +61,23 @@ current
 
 renderPageByState :: BlogState -> CGI CGIResult
 
-renderPageByState state@(BS date GenRss)
-    = renderRss state byDateTime
-
 renderPageByState state@(BS date (ThisPage cnt))
-    = renderPagedPosting state byDateTimeR cnt
+    = mobilePagedPosting state byDateTimeR cnt
 
 renderPageByState state@(BS date (ThisSubject sub))
-    = renderSingelPost state bySubject limitTo (Subject sub)
+    = mobileSingelPost state bySubject limitTo (Subject sub)
 
 renderPageByState state@(BS date (ThisAuthor author))
-    = renderSimpleAbstracts state byDateTimeR limitTo (From author)
+    = mobileSimpleAbstracts state byDateTimeR limitTo (From author)
 
 renderPageByState state@(BS date (ThisCategory cat))
-    = renderSimpleAbstracts state byDateTimeR limitTo (To [cat])
+    = mobileSimpleAbstracts state byDateTimeR limitTo (To [cat])
 
 renderPageByState state@(BS date LatestByDate)
-    = renderPagedPosting state byDateTimeR 0
+    = mobilePagedPosting state byDateTimeR 0
 
 renderPageByState state@(BS date (ThisMonth month))
-    = renderSimpleAbstracts state byDateTimeR limitTo (ThisMonth month)
+    = mobileSimpleAbstracts state byDateTimeR limitTo (ThisMonth month)
 
 try :: String -> (String -> CGI Filter) -> CGI Filter -> CGI Filter
 try s f def = do tmp <- getInput s

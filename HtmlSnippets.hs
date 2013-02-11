@@ -25,7 +25,7 @@ pageNav :: String
 pageNav = concat $
       "  Table of Content \n"
     : "--------------------- \n"
-    : "  1) <a href=\"http://frosch03.de\">Blog</a> (<a href=\"http://frosch03.de/blogfrog.cgi?rss\">rss</a>)\n"
+    : "  1) <a href=\"http://frosch03.de\">Blog</a> (<a href=\"http://m.frosch03.de\">mobile</a>) (<a href=\"http://frosch03.de/blogfrog.cgi?rss\">rss</a>)\n"
     : "  2) <a href=\"http://frosch03.de/pad/\">Pads</a>\n"
     : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
     : [[]]
