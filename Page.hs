@@ -77,7 +77,47 @@ simpleSite date f x
         )
     )
 
-
+newSite :: Date -> (a -> Html) -> a -> Html
+newSite date f x 
+    =   htmlHead
+    +++ body
+    <<
+    ( ( thediv ! [identifier "wrapper"] $
+        ( thediv ! [identifier "header"] $
+          (primHtml pageHead)
+        )
+        +++
+        ( thediv ! [identifier "middle"] $
+          ( thediv ! [identifier "container"] $
+            ( thediv ! [identifier "content"] $
+              ( thediv ! [theclass "center"] $ 
+                ( thediv ! [theclass "blogblock"] $ 
+                  f x
+                )
+              )
+            )
+          )
+          +++
+          ( thediv ! [identifier "sideLeft", theclass "sidebar"] $
+            navigation date
+          )
+          +++
+          ( thediv ! [identifier "sideRight", theclass "sidebar"] $
+            ( thediv ! [identifier "rightContainer"] $ 
+              ( ( pre ! [theclass "statics"] $ 
+                  ( primHtml pageStatics)
+                )
+                +++ (primHtml pageTwitter)
+              )
+            )
+          )
+        ) 
+      )
+      +++
+      ( thediv ! [identifier "footer"] $
+        br
+      ) 
+    )
 
 
 renderPostings :: [BlogEntry] -> Html
