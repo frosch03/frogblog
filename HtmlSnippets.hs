@@ -8,6 +8,7 @@ module HtmlSnippets
     , akvsBody
     , livefyreSnip
     , latexMathML
+    , playerScript
     )
 where
 
@@ -94,8 +95,8 @@ pageW3C = concat $
 
 latexMathML :: String
 latexMathML = concat $
-      "<script type=\"text/javascript\" src=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js\"></script>"
-    : "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css\" />"
+      "<script type=\"text/javascript\" src=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js\"></script>\n"
+    : "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css\" />\n"
     : [[]]
 
 akvsHead :: String
@@ -168,6 +169,17 @@ akvsBody = concat $
     : "<div id=\"akct\"><a id=\"akpeel\" href=\"http://www.vorratsdatenspeicherung.de\" title=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp; handeln!\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvst.gif\" alt=\"Stoppt die Vorratsdatenspeicherung! Jetzt klicken &amp;handeln!\" /></a>\n"
     : "<a id=\"akpreload\" href=\"http://wiki.vorratsdatenspeicherung.de/?title=Online-Demo\" title=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\"><img src=\"http://wiki.vorratsdatenspeicherung.de/images/Akvsi.gif\" alt=\"Willst du auch an der Aktion teilnehmen? Hier findest du alle relevanten Infos und Materialien:\" /></a></div>\n"
     : "<!-- AKVS body end -->\n"
+    : [[]]
+
+playerScript :: String
+playerScript = concat $
+      "<script type=\"text/javascript\" src=\"http://frosch03.de/audio-player/audio-player.js\"></script>\n"
+    : "<script type=\"text/javascript\">\n"
+    : "  AudioPlayer.setup(\"http://frosch03.de/audio-player/player.swf\", {\n"
+    : "  width: 400,\n"
+    : "  transparentpagebg: \"yes\"\n"
+    : "  });\n"
+    : "</script>\n"
     : [[]]
 
 

@@ -158,6 +158,7 @@ htmlHead =  header
          << (   thetitle << (stringToHtml pageTitle)
             +++ styleSheet
             +++ (primHtml latexMathML)
+	    +++ (primHtml playerScript)
             )
 
 
