@@ -7,6 +7,7 @@ module Couch
     , byDateTimeR
     , byDateTime
     , bySubject
+    , byId      
     , allCategories
     , allAuthors
     , allSubjects
@@ -78,6 +79,18 @@ limitToFilter bs (ThisMonth month) =
     where f :: BlogEntry -> Bool
           f (Entry mds _) = d =~ ("[0-9][0-9]-"++month++"-.*")
             where d = (peel $ getMeta isDate mds) 
+limitToFilter bs (ThisId id) =
+    do bs' <- bs
+       return $ filter f bs' 
+    where f :: BlogEntry -> Bool
+          f (Entry mds _) = d =~ (        show (take 4 id)             -- Year [xxxx]
+                                 ++ '-' : show (take 2 . drop  4 $ id) -- Month [xx]
+                                 ++ '-' : show (take 2 . drop  6 $ id) -- Day [xx]
+                                 ++ '-' : show (take 2 . drop  8 $ id) -- Hour [xx]
+                                 ++ ':' : show (take 2 . drop 10 $ id) -- Minute [xx]
+                                 )
+            where d = (peel $ getMeta isDate mds) 
+
 
 limitToMeta :: IO [BlogEntry] -> MetaData -> IO [BlogEntry]
 limitToMeta bs (From author) =
@@ -105,6 +118,9 @@ byDateTime = query "allByDate" False
 
 bySubject :: FetchCouch BlogEntry
 bySubject = query "bySubject" False
+
+byId :: FetchCouch BlogEntry
+byId = query "byId" False
 
 allCategories :: CouchQuery
 allCategories = (byDateTimeR, onlyCategories)

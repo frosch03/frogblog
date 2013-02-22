@@ -24,7 +24,8 @@ import Filter
 import BlogState
 import Config hiding (blogURL, blogPath, blogName)
 import Couch ( fetch, limitTo
-             , byDateTimeR, byDateTime, bySubject)
+             , byDateTimeR, byDateTime, bySubject
+             , byId)
 
 
 main :: IO ()
@@ -41,6 +42,7 @@ getFilter :: CGI Filter
 getFilter
     = try "page"      (return . ThisPage . read)
     $ try "subject"   (return . ThisSubject)
+    $ try "id"        (return . ThisId)
     $ try "author"    (return . ThisAuthor)
     $ try "category"  (return . ThisCategory)
     $ try "month"     (return . ThisMonth)
@@ -71,6 +73,9 @@ renderPageByState state@(BS date (ThisPage cnt))
 
 renderPageByState state@(BS date (ThisSubject sub))
     = renderSingelPost state bySubject limitTo (Subject sub)
+
+renderPageByState state@(BS date (ThisId id))
+    = renderSingelPost state byId limitTo (ThisId id)
 
 renderPageByState state@(BS date (ThisAuthor author))
     = renderSimpleAbstracts state byDateTimeR limitTo (From author)

@@ -12,6 +12,7 @@ data Filter
     | GenRss
 
     | ThisSubject  String
+    | ThisId       String
     | ThisPage     Int
     | ThisAuthor   String
     | ThisCategory String
