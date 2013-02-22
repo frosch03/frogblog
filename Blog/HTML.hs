@@ -23,7 +23,7 @@ instance HTML (BlogEntry) where
 entryToHtml :: Html -> [MetaData] -> Pandoc -> Html
 entryToHtml heading meta entry
     = thediv ! [theclass "entry"] 
-    $     (if (isLong entry) then (heading) else (linkify ("blog", subj, heading)))
+    $     (if (isLong entry) then (heading) else (linkify ("id", toId dateS, heading)))
       +++ toHtml date +++ br
       +++ pandoc_html +++ br
       +++ hr
@@ -34,13 +34,21 @@ entryToHtml heading meta entry
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
           (Subject subj) = getMeta isSub  meta
+          (Date dateS)   = date
           pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml def' entry)
           comments       = primHtml $ livefyreSnip
           isLong         = (\(Pandoc _ x) -> (> 5) $ length x)
           def'           = P.def { writerExtensions     = insert Ext_tex_math_dollars (writerExtensions P.def)
                                  , writerHTMLMathMethod = LaTeXMathML (Just "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
                                  }          
-          
+
+toId :: String -> String
+toId d = year ++ month ++ day ++ hour ++ minute
+  where year   = take 4 d
+        month  = take 2 . drop  5 $ d
+        day    = take 2 . drop  8 $ d
+        hour   = take 2 . drop 11 $ d
+        minute = take 2 . drop  4 $ d
 
 
 

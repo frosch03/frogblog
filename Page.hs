@@ -167,9 +167,9 @@ dynNav :: Date -> Html
 dynNav (D (year, month, day))
     =          stringToHtml "  Blog Navigation"
     +++ br +++ stringToHtml "-------------------"
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "page=0")) (stringToHtml "latest"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "month") ++ ('=': (month2string month)))             (stringToHtml "this month"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogURL ++ ('?': "month") ++ ('=': (month2string $ lastMonth month))) (stringToHtml "last month"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("page/0")) (stringToHtml "latest"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("month") ++ ('/': (month2string month)))             (stringToHtml "this month"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("month") ++ ('/': (month2string $ lastMonth month))) (stringToHtml "last month"))
 --  +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
 --  +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
 
@@ -202,5 +202,5 @@ pnWrap (actPage, maxPage) =
          )
     where isNext  = (actPage < maxPage)
           isPrev  = (actPage > 0)
-          next    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage+1))) (stringToHtml "[ older ")
-          prev    = toHtml $ hotlink (blogURL ++ ('?': "page") ++ ('=': show (actPage-1))) (stringToHtml "| newer ]")
+          next    = toHtml $ hotlink (blogPath ++ ("page") ++ ('/': show (actPage+1))) (stringToHtml "[ older ")
+          prev    = toHtml $ hotlink (blogPath ++ ("page") ++ ('/': show (actPage-1))) (stringToHtml "| newer ]")
