@@ -202,5 +202,5 @@ pnWrap (actPage, maxPage) =
          )
     where isNext  = (actPage < maxPage)
           isPrev  = (actPage > 0)
-          next    = toHtml $ hotlink (blogPath ++ ("page") ++ ('/': show (actPage+1))) (stringToHtml "[ older ")
-          prev    = toHtml $ hotlink (blogPath ++ ("page") ++ ('/': show (actPage-1))) (stringToHtml "| newer ]")
+          next    = toHtml $ hotlink (blogPath ++ ("/page/") ++ (show (actPage+1))) (stringToHtml "[ older ")
+          prev    = toHtml $ hotlink (blogPath ++ ("/page/") ++ (show (actPage-1))) (stringToHtml "| newer ]")
