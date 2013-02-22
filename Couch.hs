@@ -83,11 +83,11 @@ limitToFilter bs (ThisId id) =
     do bs' <- bs
        return $ filter f bs' 
     where f :: BlogEntry -> Bool
-          f (Entry mds _) = d =~ (        show (take 4 id)             -- Year [xxxx]
-                                 ++ '-' : show (take 2 . drop  4 $ id) -- Month [xx]
-                                 ++ '-' : show (take 2 . drop  6 $ id) -- Day [xx]
-                                 ++ '-' : show (take 2 . drop  8 $ id) -- Hour [xx]
-                                 ++ ':' : show (take 2 . drop 10 $ id) -- Minute [xx]
+          f (Entry mds _) = d =~ (        (take 4 id)             -- Year [xxxx]
+                                 ++ '.' : (take 2 . drop  4 $ id) -- Month [xx]
+                                 ++ '.' : (take 2 . drop  6 $ id) -- Day [xx]
+                                 ++ '.' : (take 2 . drop  8 $ id) -- Hour [xx]
+                                 ++ '.' : (take 2 . drop 10 $ id) -- Minute [xx]
                                  )
             where d = (peel $ getMeta isDate mds) 
 
