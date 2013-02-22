@@ -16,7 +16,7 @@ pageHead :: String
 pageHead = concat $ 
       "<div class=\"top\">\n"
     : "    <a href=\"http://frosch03.de/blog\">\n"
-    : "    <img src=\"../img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
+    : "    <img src=\"http://frosch03.de/img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
     : "    </a>\n"
     : "</div>\n"
     : [[]]
