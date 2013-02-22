@@ -23,7 +23,8 @@ import Rss
 import Filter
 import BlogState
 import Couch ( fetch, limitTo
-             , byDateTimeR, byDateTime, bySubject)
+             , byDateTimeR, byDateTime, bySubject
+             , byId)
 
 main :: IO ()
 main = do d <- current 
@@ -66,6 +67,9 @@ renderPageByState state@(BS date (ThisPage cnt))
 
 renderPageByState state@(BS date (ThisSubject sub))
     = mobileSingelPost state bySubject limitTo (Subject sub)
+
+renderPageByState state@(BS date (ThisId id))
+    = renderSingelPost state byId limitTo (ThisId id)
 
 renderPageByState state@(BS date (ThisAuthor author))
     = mobileSimpleAbstracts state byDateTimeR limitTo (From author)
