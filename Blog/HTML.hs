@@ -48,7 +48,7 @@ toId d = year ++ month ++ day ++ hour ++ minute
         month  = take 2 . drop  5 $ d
         day    = take 2 . drop  8 $ d
         hour   = take 2 . drop 11 $ d
-        minute = take 2 . drop  4 $ d
+        minute = take 2 . drop 14 $ d
 
 
 
