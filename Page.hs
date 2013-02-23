@@ -168,9 +168,9 @@ dynNav :: Date -> Html
 dynNav (D (year, month, day))
     =          stringToHtml "  Blog Navigation"
     +++ br +++ stringToHtml "-------------------"
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("page/0")) (stringToHtml "latest"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("month") ++ ('/': (month2string month)))             (stringToHtml "this month"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("month") ++ ('/': (month2string $ lastMonth month))) (stringToHtml "last month"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/page/0")) (stringToHtml "latest"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/month/") ++ ((month2string month)))             (stringToHtml "this month"))
+    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/month/") ++ ((month2string $ lastMonth month))) (stringToHtml "last month"))
 --  +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
 --  +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
 
