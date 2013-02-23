@@ -159,6 +159,7 @@ htmlHead =  header
             +++ styleSheet
             +++ (primHtml latexMathML)
 	    +++ (primHtml playerScript)
+            +++ (primHtml flattrSnip)
             )
 
 

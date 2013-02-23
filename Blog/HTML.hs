@@ -29,12 +29,28 @@ entryToHtml heading meta entry
       +++ hr
       +++ (stringToHtml "From: " +++ toHtml from +++ br) 
       +++ (stringToHtml "To: "   +++ toHtml to   +++ br)
+      +++ (if (isLong entry)
+           then
+             (anchor ! [ theclass "FlattrButton"
+                       , strAttr "href"  (blogPath ++ ("/id/") ++ toId dateS)
+                       , strAttr "title" subj
+                       , strAttr "rel" $  "flattr;uid:" ++ flattrUid
+                                       ++ ";category:"  ++ flattrCat
+                                       ++ ";tags:"      ++ tags
+                                       ++ ";"
+                       ]
+             ) br
+           else
+             br
+           )
       +++ if (isLong entry) then (hr +++ comments) else (br)
     where date = getMeta isDate meta
           from = getMeta isFrom meta
           to   = getMeta isTo   meta
           (Subject subj) = getMeta isSub  meta
           (Date dateS)   = date
+          (To toS)       = to
+          tags           = filter (/= ' ') $ foldl1 (\xs x -> xs ++ (',':x)) toS
           pandoc_html    = primHtml $ BStr.renderHtml (P.writeHtml def' entry)
           comments       = primHtml $ livefyreSnip
           isLong         = (\(Pandoc _ x) -> (> 5) $ length x)

@@ -9,6 +9,7 @@ module HtmlSnippets
     , livefyreSnip
     , latexMathML
     , playerScript
+    , flattrSnip
     )
 where
 
@@ -206,4 +207,23 @@ livefyreSnip = concat $
     : "}());\n"
     : "</script>\n"
     : "<!-- END: Livefyre Embed -->\n"
+    : [[]]
+
+flattrSnip :: String
+flattrSnip = concat $
+      "<script type=\"text/javascript\">\n"
+    : "/* <![CDATA[ */\n"
+    : "    (function() {\n"
+    : "        var s = document.createElement('script');\n"
+    : "        var t = document.getElementsByTagName('script')[0];\n"
+    : "\n"
+    : "        s.type = 'text/javascript';\n"
+    : "        s.async = true;\n"
+    : "        s.src = '//api.flattr.com/js/0.6/load.js?'+\n"
+    : "                'mode=auto&uid=frosch03&category=text';\n"
+    : "\n"
+    : "        t.parentNode.insertBefore(s, t);\n"
+    : "    })();\n"
+    : "/* ]]> */\n"
+    : "</script>\n"
     : [[]]
