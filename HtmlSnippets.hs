@@ -39,12 +39,12 @@ pageStatics = concat $
     : "+---------------------------+\n"
     : "|                           |\n"
     : "|  * <a href=\"http://frosch03.de/blogfrog.cgi?subject=Alter%20Kontent\">old frosch03.de</a>        |\n"
-    : "|                           |\n"
-    : "|  * <a href=\"http://frosch03.de/pad/GrillParty.html\">Pad: GrillParty</a>        |\n"
-    : "|                           |\n"
+    : "|  * <a href=\"http://frosch03.de/pad/Mahlzeit.html\">Pad: Mahlzeit</a>          |\n"
     : "|  * <a href=\"http://frosch03.de/linklist/groupchat.html\">Groupchat Links</a>        |\n"
     : "|                           |\n"
-    : "+---------------------------+\n"
+    : "+---------------------------+"
+    : "<a href=\"http://flattr.com/thing/1147770/frosch03-de-confessions-of-a-functional-mind\" style=\"background-color: #333333;\" target=\"_blank\"> \n"
+    : "<img src=\"http://api.flattr.com/button/flattr-badge-large.png\" alt=\"Flattr this\" title=\"Flattr this\" border=\"0\" /></a>\n"
     : [[]]
 
 pageTwitter :: String
@@ -220,7 +220,7 @@ flattrSnip = concat $
     : "        s.type = 'text/javascript';\n"
     : "        s.async = true;\n"
     : "        s.src = '//api.flattr.com/js/0.6/load.js?'+\n"
-    : "                'mode=auto&uid=frosch03&category=text';\n"
+    : "                'mode=auto&uid=frosch03&category=text&button=compact';\n"
     : "\n"
     : "        t.parentNode.insertBefore(s, t);\n"
     : "    })();\n"
