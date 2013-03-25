@@ -77,9 +77,9 @@ shorten i (Entry be_md p)
         p_bs''      = reverse $ (appendLink date p_bs_last) : (p_bs_firsts)
 
           
-appendLink date (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))])
-appendLink date (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))])
-appendLink date _          = Plain        [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))]
+appendLink date (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/id" ++ (toId date), date))])
+appendLink date (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/id/" ++ (toId date), date))])
+appendLink date _          = Plain        [(Link [(Str "(more)")] ("http://frosch03.de/id/" ++ (toId date), date))]
 
           
 behead :: Block -> Block
