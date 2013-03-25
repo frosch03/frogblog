@@ -68,18 +68,18 @@ shorten :: Int -> BlogEntry -> BlogEntry
 shorten i (Entry be_md p) 
   = (Entry be_md (Pandoc p_md p_bs''))
   where (Pandoc p_md p_bs) = p''
-        (Subject subj)     = getMeta isSub be_md
+        (Date date) = getMeta isDate be_md
         p'          = bottomUp behead $ (bottomUp delink) p
         p''         = (readMarkdown def $ unlines shrt)
         shrt        = take i $ lines $ writePlain def p'
         p_bs_last   = head $ reverse p_bs
         p_bs_firsts = tail $ reverse p_bs          
-        p_bs''      = reverse $ (appendLink subj p_bs_last) : (p_bs_firsts)
+        p_bs''      = reverse $ (appendLink date p_bs_last) : (p_bs_firsts)
 
           
-appendLink subj (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))])
-appendLink subj (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))])
-appendLink subj _          = Plain [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ subj, subj))]
+appendLink date (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))])
+appendLink date (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))])
+appendLink date _          = Plain        [(Link [(Str "(more)")] ("http://frosch03.de/blog/" ++ (toId date), date))]
 
           
 behead :: Block -> Block

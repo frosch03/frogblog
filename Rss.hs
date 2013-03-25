@@ -71,19 +71,19 @@ mzChanE
     , TextInput "frosch03.de/cat/mahlzeit" "Mahlzeit" "" froguri
     ] 
 
-mzRss :: [BlogEntry] -> String
-mzRss es = header ++ ((showXML.rssToXML) $ froggerss fbEmptyRss es)
-  where header
-          = concat $ 
-              "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            : "<rss xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n"
-            : [[]]
-        itunesHeader
+-- mzRss :: [BlogEntry] -> String
+-- mzRss es = header ++ ((showXML.rssToXML) $ froggerss fbEmptyRss es)
+--   where header
+--           = concat $ 
+--               "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+--             : "<rss xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n"
+--             : [[]]
+--         itunesHeader
 
 
 
 
-mzRssHead :: RSS -> [BlogEntry] -> RSS
+-- mzRssHead :: RSS -> [BlogEntry] -> RSS
 -- <title>Mahlzeit
 -- <link>http://frosch03.de/category/Mahlzeit
 -- <language>de

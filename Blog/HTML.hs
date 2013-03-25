@@ -11,7 +11,7 @@ import Data.Set (insert)
 
 -- Intern
 import Blog.Definition
-import Blog.Auxiliary (linkify) --, textLink)
+import Blog.Auxiliary (linkify, toId)
 import Auxiliary (peel, getMeta, isSub, isDate, isFrom, isTo)
 import Config
 import HtmlSnippets (livefyreSnip)
@@ -57,14 +57,6 @@ entryToHtml heading meta entry
           def'           = P.def { writerExtensions     = insert Ext_tex_math_dollars (writerExtensions P.def)
                                  , writerHTMLMathMethod = LaTeXMathML (Just "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
                                  }          
-
-toId :: String -> String
-toId d = year ++ month ++ day ++ hour ++ minute
-  where year   = take 4 d
-        month  = take 2 . drop  5 $ d
-        day    = take 2 . drop  8 $ d
-        hour   = take 2 . drop 11 $ d
-        minute = take 2 . drop 14 $ d
 
 
 

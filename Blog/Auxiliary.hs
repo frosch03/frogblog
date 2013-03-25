@@ -1,6 +1,7 @@
 module Blog.Auxiliary 
     ( linkify
     , dropOK
+    , toId
     -- , textLink
     )
 where
@@ -31,3 +32,13 @@ linkify (par, val, htmltext) = toHtml $ hotlink (blogPath ++ ('/': par) ++ ('/' 
 dropOK :: Result a -> a
 dropOK (Ok x)    = x 
 dropOK (Error x) = error x
+
+
+toId :: String -> String
+toId d = year ++ month ++ day ++ hour ++ minute
+  where year   = take 4 d
+        month  = take 2 . drop  5 $ d
+        day    = take 2 . drop  8 $ d
+        hour   = take 2 . drop 11 $ d
+        minute = take 2 . drop 14 $ d
+
