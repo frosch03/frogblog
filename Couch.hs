@@ -129,7 +129,7 @@ allAuthors :: CouchQuery
 allAuthors = (byDateTimeR, onlyAuthors)
 
 allSubjects :: CouchQuery
-allSubjects = (bySubject, onlySubjects)
+allSubjects = (byDateTimeR, onlySubjects)
 
 
 
