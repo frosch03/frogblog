@@ -46,7 +46,7 @@ list _
   = do xs  <- fetchMeta allSubjects
        sequence_ $ map (putStrLn.spc2uds) xs
   where spc2uds cs = map (\c -> if c == ' ' then '_' else c) cs
-       
+
 
 delete :: [String] -> IO ()
 delete (sub:_) = 

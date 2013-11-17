@@ -49,34 +49,8 @@ pageStatics = concat $
 
 pageTwitter :: String
 pageTwitter = concat $ 
-      "<script charset=\"utf-8\" src=\"http://widgets.twimg.com/j/2/widget.js\"></script>\n"
-    : "<script>\n"
-    : "new TWTR.Widget({\n"
-    : "  version: 2,\n"
-    : "  type: 'profile',\n"
-    : "  rpp: 4,\n"
-    : "  interval: 30000,\n"
-    : "  width: 200,\n"
-    : "  height: 300,\n"
-    : "  theme: {\n"
-    : "    shell: {\n"
-    : "      background: '#333333',\n"
-    : "      color: '#cccccc'\n"
-    : "    },\n"
-    : "    tweets: {\n"
-    : "      background: '#333333',\n"
-    : "      color: '#cccccc',\n"
-    : "      links: '#808080'\n"
-    : "    }\n"
-    : "  },\n"
-    : "  features: {\n"
-    : "    scrollbar: false,\n"
-    : "    loop: false,\n"
-    : "    live: false,\n"
-    : "    behavior: 'all'\n"
-    : "  }\n"
-    : "}).render().setUser('frosch03').start();\n"
-    : "</script>\n"
+      "<a class=\"twitter-timeline\"  href=\"https://twitter.com/frosch03\"  data-widget-id=\"402027882446217216\" width=\"200\" height=\"300\" data-chrome=\"nofooter transparent\" data-tweet-limit=\"5\" data-link-color=\"#808080\">Tweets by @frosch03</a>"
+    : "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>"
     : [[]]
 
 

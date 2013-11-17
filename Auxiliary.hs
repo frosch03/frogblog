@@ -1,7 +1,7 @@
-module Auxiliary 
+module Auxiliary
     ( peel, peel_
     , getMeta
-    , isSub, isDate, isTo,       isFrom 
+    , isSub, isDate, isTo,       isFrom
                    , isCategory, isAuthor
     , fromOK
     , firstUp
@@ -11,26 +11,26 @@ module Auxiliary
     )
 where
 
--- Extern 
-import Data.Char (toLower, toUpper)
-import Text.JSON (Result(..))
-import Text.Pandoc
+-- Extern
+import           Data.Char       (toLower, toUpper)
+import           Text.JSON       (Result (..))
+import           Text.Pandoc
 
 -- Intern
-import Blog.Definition hiding (Link)
-import Blog.Text
-import Blog.Auxiliary
+import           Blog.Auxiliary
+import           Blog.Definition hiding (Link)
+import           Blog.Text
 
 genAbstract e = return $ map (shorten 5) e
 
 peel :: MetaData -> String
-peel (Subject s) = s 
-peel (Date    s) = s 
-peel (From    s) = s 
+peel (Subject s) = s
+peel (Date    s) = s
+peel (From    s) = s
 peel (To      s) = concat s
 
 peel_ :: MetaData -> [String]
-peel_ (To      s) = s 
+peel_ (To      s) = s
 
 getMeta :: (MetaData -> Bool) -> [MetaData] -> MetaData
 getMeta f = head.(filter f)
@@ -52,7 +52,7 @@ isFrom (From _) = True
 isFrom _        = False
 
 fromOK :: Result a -> a
-fromOK (Ok x)    = x 
+fromOK (Ok x)    = x
 fromOK (Error x) = error $ "fromOK wasn't OK: " ++ x
 
 isAuthor    = isFrom
@@ -65,7 +65,7 @@ firstUp (x:xs) = (x_first : (tail x_low)) : firstUp xs
           x_first = toUpper $ head x_low
 
 shorten :: Int -> BlogEntry -> BlogEntry
-shorten i (Entry be_md p) 
+shorten i (Entry be_md p)
   = (Entry be_md (Pandoc p_md p_bs''))
   where (Pandoc p_md p_bs) = p''
         (Date date) = getMeta isDate be_md
@@ -73,15 +73,15 @@ shorten i (Entry be_md p)
         p''         = (readMarkdown def $ unlines shrt)
         shrt        = take i $ lines $ writePlain def p'
         p_bs_last   = head $ reverse p_bs
-        p_bs_firsts = tail $ reverse p_bs          
+        p_bs_firsts = tail $ reverse p_bs
         p_bs''      = reverse $ (appendLink date p_bs_last) : (p_bs_firsts)
 
-          
+
 appendLink date (Plain is) = Plain (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/id" ++ (toId date), date))])
 appendLink date (Para is)  = Para  (is ++ [(Link [(Str "(more)")] ("http://frosch03.de/id/" ++ (toId date), date))])
 appendLink date _          = Plain        [(Link [(Str "(more)")] ("http://frosch03.de/id/" ++ (toId date), date))]
 
-          
+
 behead :: Block -> Block
 behead (Header n _ xs)        = Para xs
 behead x = x
@@ -98,6 +98,6 @@ delink []                  = []
 -- shorten :: Int -> BlogEntry -> BlogEntry
 -- shorten n (Entry md post) = Short md (fromLines appendix short)
 --     where lns      = lines $ toText post
---           short    = take n lns 
+--           short    = take n lns
 --           sub      = peel $ getMeta isSub md
 --           appendix = (textLink ("subject", sub, " (more)... "))
