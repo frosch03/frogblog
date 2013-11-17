@@ -115,7 +115,6 @@ simpleSite date f x
     <<
     ( ( thediv ! [identifier "wrapper"] $
         ( thediv ! [identifier "header"] $
-          -- (primHtml pageHead)
           Heading.snip
         )
         +++
@@ -168,22 +167,6 @@ htmlHead =  header
             )
 
 
-
-dynNav :: Date -> Html
-dynNav (D (year, month, day))
-    =          stringToHtml "  Blog Navigation"
-    +++ br +++ stringToHtml "-------------------"
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/page/0")) (stringToHtml "latest"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/month/") ++ ((month2string month)))             (stringToHtml "this month"))
-    +++ br +++ stringToHtml "  * " +++ toHtml (hotlink (blogPath ++ ("/month/") ++ ((month2string $ lastMonth month))) (stringToHtml "last month"))
---  +++ br +++ stringToHtml "  * " +++ stringToHtml "this year by month"
---  +++ br +++ stringToHtml "  * " +++ stringToHtml "all articles (by subject)"
-
-    where month2string m = if m < 10 then '0': (show m)
-                                     else (show m)
-          lastMonth m = if m == 1 then 1 else (m-1)
-
-
 navigation :: Date -> Html
 navigation d
     = thediv ! [identifier "leftContainer"] $
@@ -192,7 +175,6 @@ navigation d
             BlogNav.snip
             +++ br
             +++ (fsnip d)
-            -- +++ dynNav d
         )
 
 pnNavi :: Counts -> (a -> Html) -> a -> Html
