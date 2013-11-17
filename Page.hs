@@ -6,6 +6,10 @@ import Text.XHtml.Strict hiding (sub)
 import Network.CGI (output)
 
 -- Intern
+import Snippets.Heading        as Heading
+import Snippets.BlogNavigation as BlogNav
+import Snippets.DateNavigation as DateNav
+
 import Blog
 import Auxiliary (getMeta, isFrom, isSub, isTo, isDate, genAbstract)
 import HtmlSnippets
@@ -111,7 +115,8 @@ simpleSite date f x
     <<
     ( ( thediv ! [identifier "wrapper"] $
         ( thediv ! [identifier "header"] $
-          (primHtml pageHead)
+          -- (primHtml pageHead)
+          Heading.snip
         )
         +++
         ( thediv ! [identifier "middle"] $
@@ -179,17 +184,15 @@ dynNav (D (year, month, day))
           lastMonth m = if m == 1 then 1 else (m-1)
 
 
-staticNav :: Html
-staticNav = primHtml pageNav
-
 navigation :: Date -> Html
 navigation d
     = thediv ! [identifier "leftContainer"] $
         thediv ! [identifier "left"] $
         (   pre ! [theclass "navi"] $ 
-                staticNav
+            BlogNav.snip
             +++ br
-            +++ dynNav d
+            +++ (fsnip d)
+            -- +++ dynNav d
         )
 
 pnNavi :: Counts -> (a -> Html) -> a -> Html

@@ -1,7 +1,7 @@
 module HtmlSnippets 
-    ( pageHead
-    , pageNav
-    , pageW3C
+    ( pageW3C
+    -- , pageHead, pageHead'
+    -- , pageNav, pageNav'
     , pageStatics
     , pageTwitter
     , akvsHead
@@ -12,25 +12,6 @@ module HtmlSnippets
     , flattrSnip
     )
 where
-
-pageHead :: String
-pageHead = concat $ 
-      "<div class=\"top\">\n"
-    : "    <a href=\"http://frosch03.de/blog\">\n"
-    : "    <img src=\"http://frosch03.de/img/blog.gif\" alt=\"frosch03.de/blog\" />\n"
-    : "    </a>\n"
-    : "</div>\n"
-    : [[]]
-
-
-pageNav :: String
-pageNav = concat $
-      "  Table of Content \n"
-    : "--------------------- \n"
-    : "  1) <a href=\"http://frosch03.de\">Blog</a> (<a href=\"http://m.frosch03.de\">mobile</a>) (<a href=\"http://frosch03.de/blogfrog.cgi?rss\">rss</a>)\n"
-    : "  2) <a href=\"http://frosch03.de/pad/\">Pads</a>\n"
-    : "  3) <a href=\"http://pics.frosch03.de\">Pictures</a>\n"
-    : [[]]
 
 pageStatics :: String
 pageStatics = concat $
