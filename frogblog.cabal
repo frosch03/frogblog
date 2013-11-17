@@ -13,6 +13,10 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
+flag small
+  description:         Try to build a smaller executable
+  default:             False
+
 -- executable frogblog
 executable blogfrog.cgi
   main-is:             Main.hs
@@ -21,6 +25,8 @@ executable blogfrog.cgi
   build-depends:       base >=4.6 && <4.7, cgi >=3001.1 && <3001.2, xhtml >=3000.2 && <3000.3, mtl >=2.1 && <2.2, time >=1.4 && <1.5, old-locale >=1.0 && <1.1, CouchDB >=0.11 && <0.12, json >=0.7 && <0.8, regex-posix >=0.95 && <0.96, pandoc >=1.11 && <1.12, hscolour >=1.20 && <1.21, network >=2.4 && <2.5, rss >=3000.2 && <3000.3, blaze-html >=0.6 && <0.7, containers >=0.5 && <0.6, parsec >=3.1 && <3.2
   -- hs-source-dirs:      
   default-language:    Haskell2010
+  if flag(small)
+     ghc-options:      -dynamic
 
 executable frogblog
   main-is:             frogblog.hs
