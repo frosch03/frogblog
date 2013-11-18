@@ -5,11 +5,15 @@ where
 import Text.XHtml.Strict hiding (sub)
 import Network.CGI (output)
 
--- Intern
+-- Snippets
 import Snippets.Heading        as Heading
 import Snippets.BlogNavigation as BlogNav
 import Snippets.DateNavigation as DateNav
+import Snippets.StaticLinks    as Static
+import Snippets.Flattr         as Flattr
+import Snippets.Twitter        as Twitter
 
+-- Intern
 import Blog
 import Auxiliary (getMeta, isFrom, isSub, isTo, isDate, genAbstract)
 import HtmlSnippets
@@ -136,9 +140,10 @@ simpleSite date f x
           ( thediv ! [identifier "sideRight", theclass "sidebar"] $
             ( thediv ! [identifier "rightContainer"] $ 
               ( ( pre ! [theclass "statics"] $ 
-                  ( primHtml pageStatics)
+                      Static.snip 
+                  +++ Flattr.snip
                 )
-                +++ (primHtml pageTwitter)
+                +++ Twitter.snip
               )
             )
           )

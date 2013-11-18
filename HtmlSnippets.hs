@@ -1,7 +1,5 @@
 module HtmlSnippets 
     ( pageW3C
-    -- , pageHead, pageHead'
-    -- , pageNav, pageNav'
     , pageStatics
     , pageTwitter
     , akvsHead
