@@ -1,6 +1,14 @@
+.gitignore
 Config.hs
 *.hi
 *.o
 blogfrog.cgi
 frogblog
 TAGS
+/Config.hs~
+dist/*
+/frogblog.cabal.start
+*~
+/Blog/#Parser.hs#
+/Blog/.#Parser.hs
+/RSSTEMPLATE
